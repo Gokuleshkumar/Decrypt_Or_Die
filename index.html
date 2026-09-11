@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DECRYPT OR DIE | National College Symposium 2026</title>
+  <meta name="description" content="Decrypt or Die - Official National Level College Symposium Platform." />
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Instant Session Restoration (Prevents login screen flicker on refresh) -->
+  <script>
+    (function() {
+      try {
+        localStorage.removeItem('decrypt_session_data');
+        var saved = sessionStorage.getItem('decrypt_session_data');
+        if (saved) {
+          var data = JSON.parse(saved);
+          if (data && data.participantName && data.teamName) {
+            document.documentElement.classList.add('has-active-session');
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>
+
+  <!-- Embedded Guaranteed Self-Contained Styles -->
+  <style>
+    html.has-active-session #view-login {
+      display: none !important;
+    }
+    html.has-active-session #view-dashboard {
+      display: flex !important;
+    }
+
+    :root {
+      --bg-dark: #090d16;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-input: #0b1120;
+      
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-focus: #3b82f6;
+
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-gold: #f59e0b;
+      --accent-red: #ef4444;
+
+      --text-main: #f9fafb;
+      --text-sub: #9ca3af;
+      --text-muted: #6b7280;
+
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-view {
+      width: 100vw;
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .page-view.active {
+      display: flex !important;
+    }
+
+    #view-login {
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.15) 0%, rgba(9, 13, 22, 0.98) 75%);
+    }
+
+    .login-wrapper {
+      width: 500px;
+      max-width: 92vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .login-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .badge-pill {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: var(--accent-blue);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .login-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      width: 100%;
+    }
+
+    .card-header-clean {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-title-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-field label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .req { color: var(--accent-red); }
+
+    .input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-box i {
+      position: absolute;
+      left: 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .input-box input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font-stack);
+      padding: 0.65rem 0.9rem 0.65rem 2.6rem;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input-box input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .form-status-msg {
+      min-height: 22px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+
+    .pro-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+    }
+
+    .pro-btn:hover {
+      background: #374151;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .pro-btn.primary {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .pro-btn.primary:hover {
+      background: #2563eb;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+
+    .pro-btn.lg {
+      padding: 0.75rem 1.4rem;
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    .pro-btn.sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .login-highlights {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .dot-sep { color: var(--text-muted); }
+    .t-gold { color: var(--accent-gold); }
+    .t-blue { color: var(--accent-blue); }
+    .t-green { color: var(--accent-green); }
+
+    /* Dashboard Layout */
+    .app-header {
+      height: 60px;
+      min-height: 60px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      flex-wrap: nowrap;
+      gap: 1rem;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .header-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .team-badge {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: var(--accent-blue);
+      padding: 0.3rem 0.7rem;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .header-telemetry {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .telemetry-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    .telemetry-item span { color: var(--text-muted); font-size: 0.75rem; white-space: nowrap; }
+    .telemetry-item strong { color: var(--text-main); font-weight: 600; white-space: nowrap; }
+    .timer-val { color: var(--accent-red); font-family: var(--font-mono); font-weight: 700; }
+    .round-val { color: var(--accent-green); font-weight: 700; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .dashboard-workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      overflow-y: auto;
+      min-height: calc(100vh - 60px);
+    }
+
+    .sidebar-rounds {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar-heading {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-transform: uppercase;
+    }
+
+    .round-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    .round-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.9rem;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.2rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .round-card:hover:not(.locked) {
+      border-color: var(--accent-blue);
+      background: #1f2937;
+    }
+
+    .round-card.active {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.12);
+      box-shadow: 0 0 0 1px var(--accent-blue);
+    }
+
+    .round-card.locked {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .r-num {
+      grid-row: 1 / 3;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .round-card.active .r-num { color: var(--accent-blue); }
+
+    .r-name { font-size: 0.9rem; font-weight: 700; color: #fff; }
+    .r-sub { font-size: 0.75rem; color: var(--text-sub); }
+    .r-state { grid-column: 2 / 3; font-size: 0.72rem; font-weight: 700; color: var(--accent-green); margin-top: 0.2rem; }
+
+    .metrics-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .metrics-head { font-size: 0.8rem; font-weight: 700; color: var(--text-sub); margin-bottom: 0.6rem; text-transform: uppercase; }
+    .m-line { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 0.4rem; color: var(--text-sub); }
+    .m-line strong { color: var(--text-main); }
+    .score-txt, .q-score-tag { display: none !important; }
+
+    .progress-bar-bg { width: 90px; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent-blue); transition: width 0.4s ease; }
+
+    .stage-container {
+      position: relative;
+      overflow: visible;
+      min-height: 100%;
+    }
+
+    .stage-panel {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      padding-bottom: 2rem;
+    }
+
+    .stage-panel.active { display: flex; }
+
+    .stage-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stage-banner h2 { font-size: 1.15rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 0.6rem; }
+    .stage-desc { font-size: 0.82rem; color: var(--text-sub); margin-top: 0.2rem; }
+
+    .lvl-tag { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 700; }
+    .lvl-tag.easy { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .lvl-tag.medium { background: rgba(245, 158, 11, 0.1); color: var(--accent-gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .lvl-tag.hard { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex: 1; overflow: hidden; }
+
+    .card-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .box-title { font-size: 0.95rem; font-weight: 700; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 0.6rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .box-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 1rem; }
+
+    .hash-display {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .hash-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .hash-code { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-blue); background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.8rem; border-radius: 4px; word-break: break-all; }
+    .hash-hint { font-size: 0.75rem; color: var(--accent-gold); margin-top: 0.2rem; font-weight: 600; }
+
+    .helper-tool {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.8rem;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .helper-title { font-size: 0.8rem; color: var(--text-sub); font-weight: 700; }
+    .helper-row { display: flex; gap: 0.5rem; }
+
+    .select-box, .text-input {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font-mono);
+      padding: 0.5rem 0.8rem;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .select-box:focus, .text-input:focus { border-color: var(--border-focus); }
+    .text-input.lg { padding: 0.75rem 1rem; font-size: 0.95rem; width: 100%; }
+
+    .helper-preview { background: var(--bg-dark); padding: 0.5rem 0.8rem; border-radius: 4px; color: var(--accent-green); font-family: var(--font-mono); font-size: 0.82rem; min-height: 36px; }
+
+    .action-row { display: flex; gap: 1rem; justify-content: flex-end; margin-top: auto; }
+    .feedback-box { min-height: 24px; font-size: 0.85rem; font-weight: 700; margin-top: 0.8rem; }
+
+    .terminal-card { grid-column: 1 / 3; padding: 0; overflow: hidden; background: #070b14; border-color: rgba(59, 130, 246, 0.3); display: flex; flex-direction: column; }
+    .term-header { background: #0f172a; padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+    .term-title { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-sub); }
+    .term-status { font-size: 0.75rem; color: var(--accent-green); font-weight: 600; }
+    .term-output { flex: 1; padding: 1.2rem; overflow-y: auto; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.6; color: #38bdf8; }
+    .term-input-bar { display: flex; align-items: center; background: #020617; border-top: 1px solid var(--border-color); padding: 0.5rem 1rem; gap: 0.6rem; }
+    .prompt-label { color: var(--accent-green); font-family: var(--font-mono); font-weight: 700; }
+    .term-input-bar input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-family: var(--font-mono); font-size: 0.9rem; }
+
+    .grid-center { display: flex; justify-content: center; align-items: center; padding: 1rem; flex: 1; }
+    .matrix-4x4 { display: grid; grid-template-columns: repeat(4, 65px); grid-template-rows: repeat(4, 65px); gap: 12px; background: var(--bg-dark); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); }
+    .node-tile { background: rgba(59, 130, 246, 0.12); border: 2px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease; }
+    .node-tile:hover { border-color: var(--accent-blue); transform: scale(1.05); }
+    .node-tile.active { background: rgba(59, 130, 246, 0.35); border-color: var(--accent-blue); color: var(--accent-blue); }
+    .node-tile.target-aligned { background: rgba(16, 185, 129, 0.3); border-color: var(--accent-green); color: var(--accent-green); }
+
+    .sync-card { background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; text-align: center; display: flex; flex-direction: column; gap: 0.3rem; }
+    .sync-score { font-size: 2.2rem; font-weight: 800; color: var(--accent-blue); }
+    .sync-sub { font-size: 0.82rem; color: var(--text-sub); }
+
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; width: 620px; max-width: 92vw; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; overflow: hidden; }
+    .modal-head { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .modal-head h3 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; max-height: 70vh; overflow-y: auto; }
+    .modal-foot { padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 1rem; }
+    .modal-foot.center { justify-content: center; }
+
+    .cert-box { background: var(--bg-dark); border: 1px dashed var(--accent-gold); border-radius: 8px; padding: 1.2rem; text-align: left; margin: 1rem 0; }
+    .cert-head { font-size: 0.85rem; font-weight: 700; color: var(--accent-gold); border-bottom: 1px solid rgba(245, 158, 11, 0.3); padding-bottom: 0.4rem; margin-bottom: 0.8rem; }
+    .cert-line { display: flex; font-size: 0.88rem; margin-bottom: 0.4rem; }
+    .cert-line span { color: var(--text-muted); width: 110px; }
+    .cert-line strong { color: var(--accent-blue); }
+
+    /* Round 1 Rules & MCQ Quiz Layout Styles */
+    .rules-box-hero {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.2rem;
+      max-width: 680px;
+      margin: 1.5rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .rules-bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+
+    .rules-bullet-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--bg-dark);
+      padding: 0.9rem 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .rules-footer-action {
+      display: flex;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    .quiz-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 1.2rem;
+      height: 100%;
+    }
+
+    .quiz-main-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .quiz-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.8rem;
+    }
+
+    .q-progress-tag {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .q-score-tag {
+      color: var(--accent-green);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* Anti-Copy and Text Selection Lock for Quiz Questions & Options */
+    #r1-quiz-view, 
+    .quiz-main-card, 
+    .quiz-prompt-text, 
+    .quiz-options-container, 
+    .option-card, 
+    .opt-text, 
+    .opt-letter,
+    .palette-side-card {
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+
+    .quiz-prompt-text {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.5;
+      background: var(--bg-dark);
+      padding: 1.1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .quiz-options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 0.5rem 0;
+    }
+
+    .option-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-blue);
+      background: #1f2937;
+    }
+
+    .option-card.selected {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.18);
+      box-shadow: 0 0 0 1px var(--accent-blue);
+    }
+
+    .opt-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .option-card.selected .opt-letter {
+      background: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .opt-text {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .quiz-nav-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+    }
+
+    .palette-side-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .palette-item {
+      height: 38px;
+      border-radius: 6px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-sub);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .palette-item:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .palette-item.active {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      box-shadow: 0 0 0 1px var(--accent-blue);
+    }
+
+    .palette-item.answered {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .palette-legend {
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.6rem;
+    }
+
+    .dot-legend {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+    .dot-legend.current { background: var(--accent-blue); }
+    .dot-legend.answered { background: var(--accent-green); }
+
+    .option-card.disabled,
+    .palette-item.disabled,
+    .pro-btn:disabled,
+    .option-card[style*="pointer-events: none"] {
+      pointer-events: none !important;
+      opacity: 0.45 !important;
+      cursor: not-allowed !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: PARTICIPANT REGISTRATION & LOGIN FORM (DISPLAYED FIRST) -->
+  <div class="page-view active" id="view-login">
+    <div class="login-wrapper">
+      
+      <!-- Brand & Symposium Header -->
+      <div class="login-header">
+        <div class="badge-pill"><i class="fa-solid fa-shield-halved"></i> NATIONAL LEVEL COLLEGE SYMPOSIUM 2026</div>
+        <h1 class="brand-title">DECRYPT OR DIE</h1>
+        <p class="brand-subtitle">Department of Information & Technology</p>
+      </div>
+
+      <!-- Registration Form Card -->
+      <div class="login-card">
+        <div class="card-header-clean">
+          <div class="card-title-text"><i class="fa-solid fa-id-card"></i> Participant Login</div>
+        </div>
+
+        <form id="registration-form">
+          <div class="form-grid">
+            
+            <div class="form-field">
+              <label for="reg-team">Team Name <span class="req">*</span></label>
+              <div class="input-box">
+                <i class="fa-solid fa-users"></i>
+                <input type="text" id="reg-team" placeholder="Enter team name" required autocomplete="off" />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="reg-id">Team ID <span class="req">*</span></label>
+              <div class="input-box">
+                <i class="fa-solid fa-key"></i>
+                <input type="text" id="reg-id" placeholder="Enter team ID" required autocomplete="off" />
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-status-msg" id="login-status-msg"></div>
+
+          <button type="submit" class="pro-btn primary lg" id="btn-submit-reg">
+            Login
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer Highlights -->
+      <div class="login-highlights">
+        <span><i class="fa-solid fa-trophy t-gold"></i> Prize Pool: <strong>₹3,000</strong></span>
+        <span class="dot-sep">•</span>
+        <span><i class="fa-solid fa-layer-group t-blue"></i> <strong>3 Sequential Rounds</strong></span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE 2: 3-ROUND MISSION DASHBOARD (COMPLETELY HIDDEN UNTIL LOGIN SUBMIT) -->
+  <div class="page-view" id="view-dashboard" style="display: none;">
+    
+    <!-- Header Navigation Telemetry -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="header-title">DECRYPT OR DIE</div>
+        <div class="team-badge" id="hud-team-tag">
+          <i class="fa-solid fa-users"></i> <span id="hdr-team-name">Team Name</span>
+        </div>
+      </div>
+
+      <div class="header-telemetry">
+        <div class="telemetry-item">
+          <span>TEAM ID:</span>
+          <strong id="hdr-team-id-top">Team Id</strong>
+        </div>
+        <div class="telemetry-item" style="display: none;">
+          <span>TIME REMAINING:</span>
+          <strong class="timer-val" id="countdown-timer-hidden">00:00</strong>
+        </div>
+        <button class="pro-btn" style="padding: 0.4rem 1rem; margin-left: 1rem; border-color: var(--accent-red); color: var(--accent-red); background: rgba(239, 68, 68, 0.1);" onclick="logoutCurrentParticipant()">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+        <div class="telemetry-item">
+          <span>CURRENT ROUND:</span>
+          <strong class="round-val" id="round-indicator">ROUND 1 / 3</strong>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="pro-btn sm" id="btn-toggle-sound" title="Toggle Sound">
+          <i class="fa-solid fa-volume-high" id="sound-icon"></i> SFX
+        </button>
+        <button class="pro-btn sm" id="btn-open-rules">
+          <i class="fa-solid fa-circle-info"></i> Rules
+        </button>
+        <button class="pro-btn sm" id="btn-open-admin-login" style="border-color: rgba(245, 158, 11, 0.4); color: var(--accent-gold);">
+          <i class="fa-solid fa-user-shield"></i> Admin Portal
+        </button>
+      </div>
+    </header>
+
+    <!-- Non-Scrollable Workspace Grid -->
+    <main class="dashboard-workspace">
+      
+      <!-- Left Sidebar: Round Progression Cards -->
+      <aside class="sidebar-rounds">
+        <div class="sidebar-heading"><i class="fa-solid fa-route"></i> ROUND NAVIGATION</div>
+        
+        <div class="round-list">
+          
+          <!-- Round 1 Card -->
+          <div class="round-card active" id="nav-round-1" onclick="switchRoundTab(1)">
+            <div class="r-num">01</div>
+            <div>
+              <div class="r-name">Qualifying Quiz</div>
+              <div class="r-sub">25 Questions</div>
+            </div>
+            <div class="r-state" id="status-r1"><i class="fa-solid fa-play"></i> Active</div>
+          </div>
+
+          <!-- Round 2 Card -->
+          <div class="round-card locked" id="nav-round-2" onclick="switchRoundTab(2)">
+            <div class="r-num">02</div>
+            <div>
+              <div class="r-name">Decryption Puzzles</div>
+              <div class="r-sub">6 Puzzles • 25 Mins</div>
+            </div>
+            <div class="r-state" id="status-r2"><i class="fa-solid fa-lock"></i> Locked</div>
+          </div>
+
+          <!-- Round 3 Card -->
+          <div class="round-card locked" id="nav-round-3" onclick="switchRoundTab(3)">
+            <div class="r-num">03</div>
+            <div>
+              <div class="r-name">Neural Core</div>
+              <div class="r-sub">Memory Matrix</div>
+            </div>
+            <div class="r-state" id="status-r3"><i class="fa-solid fa-lock"></i> Locked</div>
+          </div>
+
+        </div>
+
+        <div class="metrics-card">
+          <div class="metrics-head"><i class="fa-solid fa-chart-line"></i> Team Metrics</div>
+          <div class="m-line">
+            <span>Team Hash ID:</span>
+            <strong id="hdr-team-hash">#CYBER-0000</strong>
+          </div>
+          <div class="m-line">
+            <span>Progress:</span>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="overall-progress" style="width: 10%;"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Stage Workspaces -->
+      <section class="stage-container">
+        
+        <!-- ROUND 1 STAGE -->
+        <div class="stage-panel active" id="stage-round-1">
+          <div class="stage-banner">
+            <div>
+              <h2><i class="fa-solid fa-list-check"></i> ROUND 1: QUALIFYING QUIZ CHALLENGE</h2>
+              <p class="stage-desc" id="r1-banner-desc">Review guidelines below and click Start Round 1 to begin.</p>
+            </div>
+            <span class="lvl-tag easy">Round 1</span>
+          </div>
+
+          <!-- SUB-VIEW 1: RULES & START BUTTON -->
+          <div id="r1-rules-view" class="r1-subview" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="rules-box-hero">
+              <div class="box-title"><i class="fa-solid fa-shield-halved"></i> Round 1 Instructions</div>
+              
+              <ul class="rules-bullet-list">
+                <li><i class="fa-solid fa-clock t-blue"></i> <span>Duration: <strong>35 minutes</strong></span></li>
+                <li><i class="fa-solid fa-circle-question t-gold"></i> <span>Number of questions: <strong>25</strong></span></li>
+                <li><i class="fa-solid fa-trophy t-green"></i> <span>Only top teams (Based on the score) qualify for Round 2</span></li>
+                <li><i class="fa-solid fa-expand t-red"></i> <span>Full Screen & Proctoring: <strong>Tab switching or exiting fullscreen is prohibited</strong></span></li>
+              </ul>
+
+              <div class="rules-footer-action">
+                <button class="pro-btn primary lg" id="btn-start-r1-quiz" style="max-width: 320px; font-size: 1.05rem;">
+                  <i class="fa-solid fa-play"></i> Start Round 1
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 2: 25-QUESTION MCQ QUIZ INTERFACE (HIDDEN UNTIL START CLICKED) -->
+          <div id="r1-quiz-view" class="r1-subview" style="display: none; height: 100%;">
+            <div class="quiz-layout-grid">
+              
+              <!-- Question Card -->
+              <div class="card-box quiz-main-card">
+                <div class="quiz-card-head" style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="q-progress-tag" id="q-counter-tag">Question 1 of 25</div>
+                    <div class="timer-val" style="font-size: 1.1rem; color: var(--accent-red); font-family: var(--font-mono); font-weight: 700;"><i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">35:00</span></div>
+                  </div>
+                  <div class="badge-pill" style="border-color: rgba(239, 68, 68, 0.5); color: var(--accent-red); background: rgba(239, 68, 68, 0.1); font-size: 0.72rem;">
+                    <i class="fa-solid fa-shield-halved"></i> FULLSCREEN PROCTORING ACTIVE
+                  </div>
+                </div>
+
+                <div class="quiz-prompt-text" id="q-prompt-text">
+                  Loading Question...
+                </div>
+
+                <div class="quiz-options-container" id="q-options-container">
+                  <!-- Options rendered dynamically -->
+                </div>
+
+                <div class="quiz-nav-actions">
+                  <button class="pro-btn sm" id="btn-prev-q" disabled><i class="fa-solid fa-chevron-left"></i> Previous</button>
+                  <button class="pro-btn primary sm" id="btn-next-q">Next Question <i class="fa-solid fa-chevron-right"></i></button>
+                  <button class="pro-btn success lg" id="btn-submit-r1-quiz" onclick="if (!state.disqualified) submitR1Quiz()" style="display: none; background: var(--accent-green); border-color: var(--accent-green); cursor: pointer;">
+                    <i class="fa-solid fa-check-double"></i> Submit Round 1 Quiz
+                  </button>
+                </div>
+              </div>
+
+              <!-- Question Palette Grid -->
+              <div class="card-box palette-side-card">
+                <div class="box-title"><i class="fa-solid fa-grid"></i> Question Palette (1 - 25)</div>
+                <div class="palette-grid" id="q-palette-grid">
+                  <!-- 25 palette number tiles rendered dynamically -->
+                </div>
+                <div class="palette-legend">
+                  <span><span class="dot-legend current"></span> Current</span>
+                  <span><span class="dot-legend answered"></span> Answered</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 3: WAITING FOR ADMIN APPROVAL (DISPLAYED AFTER QUIZ SUBMITTED) -->
+          <div id="r1-waiting-subview" class="r1-subview" style="display: none; width: 100%;">
+            <div style="background: var(--bg-surface); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 2.2rem; text-align: center; max-width: 720px; margin: 1rem auto; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+              
+              <div style="margin-bottom: 1rem;">
+                <i class="fa-solid fa-circle-check" style="font-size: 4.5rem; color: #10b981; filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.4));"></i>
+              </div>
+
+              <h2 style="color: #ffffff; font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;">
+                Round 1 <span style="color: #10b981;">Quiz Submitted!</span>
+              </h2>
+
+              <p style="color: var(--text-sub); font-size: 1rem; margin-bottom: 1.5rem;">
+                Your 25 answers have been encrypted and saved to the database server.
+              </p>
+
+              <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.4rem; text-align: left; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; margin-bottom: 1rem;">
+                  <span id="r1-waiting-status-text" style="color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-hourglass-half fa-spin-pulse"></i> Waiting for Round-1 Results
+                  </span>
+                  <span class="badge-pill" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.4); font-weight: 700; font-size: 0.78rem;">
+                    <i class="fa-solid fa-shield-check"></i> Submitted
+                  </span>
+                </div>
+
+                <p style="color: var(--text-sub); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
+                  The administrators are currently reviewing team submissions. Once your team is verified and approved by the Admin in the Admin Portal, <strong>Round 2: Mainframe CLI Breach</strong> will automatically unlock!
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; background: rgba(0,0,0,0.3); padding: 0.9rem 1.1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem;">
+                  <div>Participant: <strong id="sub-part-name" style="color: #fff;">-</strong></div>
+                  <div>Team Name &nbsp;: <strong id="sub-team-name" style="color: var(--accent-blue);">-</strong></div>
+                  <div>College &nbsp;&nbsp;&nbsp;: <strong id="sub-coll-name" style="color: #fff;">-</strong></div>
+                  <div>Team Hash &nbsp;: <strong id="sub-team-hash" style="color: var(--accent-gold);">-</strong></div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ROUND 2 STAGE: DECRYPTION BASED PUZZLES -->
+        <div class="stage-panel" id="stage-round-2">
+          <div class="stage-banner">
+            <div>
+              <h2><i class="fa-solid fa-key"></i> ROUND 2: DECRYPTION BASED PUZZLE</h2>
+              <p class="stage-desc" id="r2-banner-desc">Review instructions below and click Start Round 2 to begin.</p>
+            </div>
+            <span class="lvl-tag medium">Level 2</span>
+          </div>
+
+          <!-- SUB-VIEW 1: RULES & INSTRUCTIONS -->
+          <div id="r2-rules-view" class="r2-subview" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="rules-box-hero">
+              <div class="box-title"><i class="fa-solid fa-shield-halved"></i> Round 2 Instructions & Rules</div>
+              
+              <ul class="rules-bullet-list">
+                <li><i class="fa-solid fa-clock t-blue"></i> <span>Duration: <strong>25 minutes</strong></span></li>
+                <li><i class="fa-solid fa-puzzle-piece t-gold"></i> <span>Number of Puzzles: <strong>6 Decryption Puzzles</strong></span></li>
+                <li><i class="fa-solid fa-stopwatch t-green"></i> <span>Scoring: <strong>Based on puzzle solving speed in less time (Time Bonus)</strong></span></li>
+                <li><i class="fa-solid fa-lock t-red"></i> <span>Proctoring: <strong>Fullscreen enforcement and tab monitoring active</strong></span></li>
+              </ul>
+
+              <div class="rules-footer-action">
+                <button class="pro-btn primary lg" id="btn-start-r2-puzzles" onclick="startRound2Puzzles()" style="max-width: 320px; font-size: 1.05rem;">
+                  <i class="fa-solid fa-play"></i> Start Round 2
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 2: PUZZLE SOLVING INTERFACE -->
+          <div id="r2-puzzle-view" class="r2-subview" style="display: none; height: 100%;">
+            <div class="quiz-layout-grid">
+              
+              <!-- Main Puzzle Card -->
+              <div class="card-box quiz-main-card">
+                <div class="quiz-card-head" style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="q-progress-tag" id="pz-counter-tag">Puzzle 1 of 6</div>
+                    <div class="timer-val" style="font-size: 1.1rem; color: var(--accent-red); font-family: var(--font-mono); font-weight: 700;"><i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">35:00</span></div>
+                  </div>
+                  <div class="badge-pill" style="border-color: rgba(59, 130, 246, 0.5); color: var(--accent-blue); background: rgba(59, 130, 246, 0.1); font-size: 0.72rem;">
+                    <i class="fa-solid fa-key"></i> DECRYPTION CHALLENGE
+                  </div>
+                </div>
+
+                <div class="quiz-prompt-text" id="pz-prompt-title" style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem;">
+                  Loading Decryption Puzzle...
+                </div>
+
+                <!-- Ciphertext Display Box -->
+                <div style="background: var(--bg-dark); border: 1px dashed var(--accent-blue); padding: 1.2rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-gold); font-size: 1.1rem; letter-spacing: 1px; word-break: break-all; margin-bottom: 1.2rem; position: relative;" id="pz-ciphertext-box">
+                  <span style="font-size: 0.7rem; color: var(--text-sub); display: block; margin-bottom: 0.3rem; font-family: var(--font-sans);">ENCRYPTED CIPHERTEXT:</span>
+                  <span id="pz-ciphertext-text">...</span>
+                </div>
+
+                <!-- Hint Box -->
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start;" id="pz-hint-box">
+                  <i class="fa-solid fa-lightbulb" style="color: var(--accent-gold); font-size: 1.2rem; margin-top: 0.2rem;"></i>
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 700; display: block; margin-bottom: 0.3rem; text-transform: uppercase;">Hint</span>
+                    <span id="pz-hint-text" style="font-size: 0.9rem; color: var(--text-sub); line-height: 1.5; white-space: pre-wrap;">...</span>
+                  </div>
+                </div>
+
+                <!-- Input Box -->
+                <div style="margin-bottom: 1.2rem;">
+                  <label style="display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 0.4rem;">ENTER DECRYPTED PLAINTEXT ANSWER:</label>
+                  <input type="text" id="pz-answer-input" oninput="handleR2InputAnswer(this.value)" placeholder="Type your plaintext answer..." style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); color: #fff; padding: 0.85rem 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 1.05rem;" autocomplete="off" spellcheck="false" />
+                </div>
+
+                <!-- Nav Controls -->
+                <div class="quiz-nav-actions">
+                  <button class="pro-btn sm" id="btn-prev-pz" onclick="navigateR2Puzzle(-1)"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+                  <button class="pro-btn primary sm" id="btn-next-pz" onclick="navigateR2Puzzle(1)">Next Puzzle <i class="fa-solid fa-chevron-right"></i></button>
+                  <button class="pro-btn success lg" id="btn-submit-r2-puzzles" onclick="if (!state.disqualified) submitR2Puzzles()" style="display: none; background: var(--accent-green); border-color: var(--accent-green); cursor: pointer;">
+                    <i class="fa-solid fa-check-double"></i> Submit Round 2 Puzzles
+                  </button>
+                </div>
+              </div>
+
+              <!-- Question/Puzzle Palette Grid -->
+              <div class="card-box palette-side-card">
+                <div class="box-title"><i class="fa-solid fa-grid"></i> Puzzle Palette (1 - 6)</div>
+                <div class="palette-grid" id="pz-palette-grid">
+                  <!-- 6 palette tiles -->
+                </div>
+                <div class="palette-legend">
+                  <span><span class="dot-legend current"></span> Current</span>
+                  <span><span class="dot-legend answered"></span> Solved</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 3: WAITING / COMPLETED VIEW -->
+          <div id="r2-waiting-subview" class="r2-subview" style="display: none; width: 100%;">
+            <div style="background: var(--bg-surface); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 2.2rem; text-align: center; max-width: 720px; margin: 1rem auto; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+              
+              <div style="margin-bottom: 1rem;">
+                <i class="fa-solid fa-circle-check" style="font-size: 4.5rem; color: #10b981; filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.4));"></i>
+              </div>
+
+              <h2 style="color: #ffffff; font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;">
+                Round 2 <span style="color: #10b981;">Successfully Completed!</span>
+              </h2>
+
+              <p style="color: var(--text-sub); font-size: 1rem; margin-bottom: 1.5rem;">
+                Your decryption puzzle scores and completion time have been recorded.
+              </p>
+
+              <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.4rem; text-align: left; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; margin-bottom: 1rem;">
+                  <span style="color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-hourglass-half fa-spin-pulse"></i> Waiting results for round-2
+                  </span>
+                  <span class="badge-pill" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.4); font-weight: 700; font-size: 0.78rem;">
+                    <i class="fa-solid fa-shield-check"></i> Completed
+                  </span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; background: rgba(0,0,0,0.3); padding: 0.9rem 1.1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem;">
+                  <div>Puzzles Solved: <strong id="r2-sub-solved" style="color: #10b981;">0 / 6</strong></div>
+                  <div>Total Score &nbsp;&nbsp;: <strong id="r2-sub-score" style="color: var(--accent-gold);">0 PTS</strong></div>
+                  <div>Time Taken &nbsp;&nbsp;&nbsp;: <strong id="r2-sub-time" style="color: var(--accent-blue);">00:00</strong></div>
+                  <div>Team Hash &nbsp;&nbsp;&nbsp;&nbsp;: <strong id="r2-sub-hash" style="color: #fff;">-</strong></div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ROUND 3 STAGE -->
+        <div class="stage-panel" id="stage-round-3">
+          <div class="stage-banner">
+            <div>
+              <h2><i class="fa-solid fa-brain"></i> ROUND 3: NEURAL CORE OVERDRIVE</h2>
+              <p class="stage-desc">Align memory grid nodes to achieve 100% synchronization and complete the challenge.</p>
+            </div>
+            <span class="lvl-tag hard">Level 3</span>
+          </div>
+
+          <div class="stage-grid">
+            <!-- Grid -->
+            <div class="card-box">
+              <div class="box-title"><i class="fa-solid fa-border-all"></i> Memory Node Matrix</div>
+              <p class="box-desc">Click memory tiles to toggle bit states (0 / 1) until target alignment is reached.</p>
+
+              <div class="grid-center">
+                <div class="matrix-4x4" id="neural-matrix-grid">
+                  <!-- JS generated -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Sync Meter -->
+            <div class="card-box">
+              <div class="box-title"><i class="fa-solid fa-bullseye"></i> Synchronization Meter</div>
+              
+              <div class="sync-card">
+                <div class="sync-score" id="sync-percentage">0%</div>
+                <div class="sync-sub" id="sync-status-label">Initializing Node Alignment...</div>
+              </div>
+
+              <div class="action-row" style="margin-top: 2rem;">
+                <button class="pro-btn" id="btn-reset-nodes"><i class="fa-solid fa-rotate"></i> Reset Grid</button>
+                <button class="pro-btn primary lg" id="btn-r3-submit"><i class="fa-solid fa-bolt"></i> Compile & Complete</button>
+              </div>
+
+              <div class="feedback-box" id="r3-feedback"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- WAITING FOR APPROVAL VIEW -->
+  <div class="page-view" id="view-waiting" style="display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 2rem; overflow: hidden; position: relative;">
+    
+    <!-- Animated Background Glow Elements -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; filter: blur(120px); pointer-events: none; animation: pulse 3s infinite ease-in-out;"></div>
+    <div style="position: absolute; top: 40%; left: 60%; transform: translate(-50%, -50%); width: 250px; height: 250px; background: rgba(59, 130, 246, 0.12); border-radius: 50%; filter: blur(90px); pointer-events: none; animation: pulse 4s infinite ease-in-out reverse;"></div>
+
+    <div style="position: relative; z-index: 10; max-width: 680px; width: 100%;">
+      
+      <!-- Big Success Checkmark Icon -->
+      <div style="margin-bottom: 1rem;">
+        <i class="fa-solid fa-circle-check" style="font-size: 5rem; color: #10b981; filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.4));"></i>
+      </div>
+
+      <h1 style="color: #ffffff; font-size: 2.4rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem;">
+        Round 1 <span style="color: #10b981;">Successfully Completed!</span>
+      </h1>
+
+      <p style="color: var(--text-sub); font-size: 1.1rem; margin-bottom: 2rem;">
+        Your 25 quiz answers have been securely logged and transmitted to the backend server.
+      </p>
+
+      <!-- Waiting Status Card -->
+      <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(16, 185, 129, 0.35); padding: 2.2rem 2.5rem; border-radius: 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); backdrop-filter: blur(12px); text-align: left;">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1.2rem;">
+          <h2 id="global-waiting-status-text" style="color: var(--accent-gold); font-size: 1.35rem; margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+            <i class="fa-solid fa-hourglass-half fa-spin-pulse" style="color: var(--accent-gold);"></i>
+            Waiting for Round-1 Results
+          </h2>
+          <span class="badge-pill" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.4); font-weight: 700;">
+            <i class="fa-solid fa-shield-check"></i> Quiz Submitted
+          </span>
+        </div>
+
+        <p style="color: var(--text-sub); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          The Admin Portal is currently reviewing team submissions. Please stay on this screen. As soon as the administrator verifies your submission and selects your team, <strong>Round 2: Mainframe CLI Breach</strong> will automatically unlock!
+        </p>
+
+        <!-- Participant Details Summary Box -->
+        <div style="background: var(--bg-dark); padding: 1rem 1.2rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-mono); font-size: 0.88rem; color: var(--text-sub); margin-bottom: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+          <div>Participant : <strong id="wait-part-name" style="color: #fff;">-</strong></div>
+          <div>Team Name &nbsp;: <strong id="wait-team-name" style="color: var(--accent-blue);">-</strong></div>
+          <div>College Name: <strong id="wait-coll-name" style="color: #fff;">-</strong></div>
+          <div>Team Hash ID: <strong id="wait-team-hash" style="color: var(--accent-gold);">-</strong></div>
+        </div>
+
+
+      </div>
+
+    </div>
+    
+  </div>
+
+  <!-- DISQUALIFIED VIEW -->
+  <div class="page-view" id="view-disqualified" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0, 0, 0, 0.95); flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; overflow: hidden; pointer-events: auto;">
+  
+    <marquee scrollamount="25" style="position: absolute; top: 15%; width: 100%; color: rgba(239, 68, 68, 0.1); font-size: 12rem; font-weight: 900; white-space: nowrap; z-index: 0; pointer-events: none;">
+      CHEATER DETECTED !!! NO HACKING ALLOWED !!!
+    </marquee>
+    <marquee scrollamount="35" direction="right" style="position: absolute; bottom: 15%; width: 100%; color: rgba(239, 68, 68, 0.1); font-size: 10rem; font-weight: 900; white-space: nowrap; z-index: 0; pointer-events: none;">
+      SESSION TERMINATED !!! INCIDENT REPORTED !!!
+    </marquee>
+
+    <div style="font-size: 5rem; color: var(--accent-red); margin-bottom: 1rem; position: relative; z-index: 10;">
+      <i class="fa-solid fa-ban"></i>
+    </div>
+    <h1 style="color: var(--accent-red); font-size: 4rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; position: relative; z-index: 10;">
+      <marquee scrollamount="15" width="600">DISQUALIFIED !!! DISQUALIFIED !!! DISQUALIFIED !!!</marquee>
+    </h1>
+    <p style="color: var(--text-sub); font-size: 1.2rem; max-width: 600px; margin-bottom: 2rem; position: relative; z-index: 10;">
+      Your session has been terminated and auto-submitted due to proctoring violations.
+      An incident report has been filed with the administrators.
+    </p>
+    <button class="pro-btn" onclick="location.reload()" style="position: relative; z-index: 10;"><i class="fa-solid fa-rotate-right"></i> Back to Home</button>
+  </div>
+
+  <!-- SYMPOSIUM RULES MODAL -->
+  <div class="modal-overlay" id="modal-rules">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3><i class="fa-solid fa-shield-halved"></i> Symposium Guidelines</h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeModal('modal-rules')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>1. Complete Round 1 (Cipher), Round 2 (CLI), and Round 3 (Neural Core) sequentially.</p>
+        <p>2. Registration details are logged into the backend database server upon login.</p>
+        <p>3. Requesting hints deducts 50 points from team score.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="pro-btn primary" onclick="closeModal('modal-rules')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB SWITCH & FULLSCREEN PROCTORING WARNING MODAL -->
+  <div class="modal-overlay" id="modal-tab-warning" style="z-index: 9999;">
+    <div class="modal-card" style="border-color: var(--accent-red); max-width: 500px;">
+      <div class="modal-head" style="background: rgba(239, 68, 68, 0.15); border-bottom-color: rgba(239, 68, 68, 0.3);">
+        <h3 style="color: var(--accent-red); display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-triangle-exclamation"></i> PROCTORING VIOLATION DETECTED
+        </h3>
+      </div>
+      <div class="modal-body" style="text-align: center; gap: 1rem; padding: 1.8rem 1.5rem;">
+        <div style="font-size: 3rem; color: var(--accent-red); margin-bottom: 0.5rem;">
+          <i class="fa-solid fa-shield-cat"></i>
+        </div>
+        <h4 style="color: #fff; font-size: 1.15rem;">Tab Switching & Exiting Fullscreen is Prohibited!</h4>
+        <p style="color: var(--text-sub); font-size: 0.9rem; line-height: 1.5;" id="tab-warning-reason">
+          You navigated away from the quiz window or exited full-screen mode. All violations are logged.
+        </p>
+
+        <div style="background: var(--bg-dark); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 0.8rem; margin: 0.5rem 0;">
+          <span style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 0.3rem;">VIOLATION COUNTER</span>
+          <strong id="tab-violation-count" style="font-size: 1.8rem; color: var(--accent-red); font-family: var(--font-mono);">1 / 2</strong>
+        </div>
+
+        <p style="color: var(--accent-gold); font-size: 0.82rem; font-weight: 600;">
+          ⚠️ Reaching 2 violations will automatically auto-submit your quiz immediately and file an incident report to the Admin Portal.
+        </p>
+      </div>
+      <div class="modal-foot center" style="border-top-color: rgba(239, 68, 68, 0.2);">
+        <button class="pro-btn primary lg" id="btn-return-fullscreen" style="background: var(--accent-red); border-color: var(--accent-red); width: 100%;">
+          <i class="fa-solid fa-expand"></i> Re-enter Fullscreen & Continue Quiz
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISQUALIFICATION ALERT MODAL -->
+  <div class="modal-overlay" id="modal-disqualified-alert" style="z-index: 9999;">
+    <div class="modal-card" style="border-color: var(--accent-red); max-width: 550px; overflow: hidden; position: relative;">
+      
+      <marquee scrollamount="20" style="position: absolute; top: 30%; width: 100%; color: rgba(239, 68, 68, 0.08); font-size: 8rem; font-weight: 900; white-space: nowrap; z-index: 0; pointer-events: none;">
+        DISQUALIFIED !!!
+      </marquee>
+
+      <div class="modal-head" style="background: rgba(239, 68, 68, 0.15); border-bottom-color: rgba(239, 68, 68, 0.3); position: relative; z-index: 10;">
+        <h3 style="color: var(--accent-red); display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-ban"></i> PROCTORING DISQUALIFICATION
+        </h3>
+      </div>
+      <div class="modal-body" style="text-align: left; padding: 1.5rem; line-height: 1.6; position: relative; z-index: 10;">
+        <p style="color: #fff; font-size: 1.05rem; font-weight: bold; margin-bottom: 1rem;">
+          An incident report has been sent directly to the Admin Portal!
+        </p>
+        <div style="background: var(--bg-dark); padding: 1rem; border: 1px solid var(--border-color); border-radius: 6px; font-family: monospace; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 1rem;">
+          <div>Participant Name : <span id="dq-part-name" style="color: #fff;"></span></div>
+          <div>Team Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span id="dq-team-name" style="color: #fff;"></span></div>
+          <div>College Name &nbsp;&nbsp;&nbsp;&nbsp;: <span id="dq-college-name" style="color: #fff;"></span></div>
+        </div>
+        <p style="color: var(--accent-red); font-weight: 600;" id="dq-reason-text">
+          You have committed 2 proctoring violations.
+        </p>
+        <p style="color: var(--text-sub); font-size: 0.9rem;">
+          Your quiz has been auto-submitted and your session is now terminated.
+        </p>
+      </div>
+      <div class="modal-foot right" style="position: relative; z-index: 10;">
+        <button class="pro-btn" style="background: var(--accent-red); border-color: var(--accent-red); color: #fff; font-weight: bold;" onclick="handleDisqualificationOk()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUND 1 SUBMISSION CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="modal-r1-submitted">
+    <div class="modal-card" style="border-color: #10b981; max-width: 520px;">
+      <div class="modal-head" style="background: rgba(16, 185, 129, 0.15); border-bottom-color: rgba(16, 185, 129, 0.3);">
+        <h3 style="color: #10b981; display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-circle-check"></i> Quiz Submitted Successfully!
+        </h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeModal('modal-r1-submitted')">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 1.8rem; line-height: 1.6;">
+        <i class="fa-solid fa-paper-plane" style="font-size: 3.5rem; color: #10b981; margin-bottom: 1rem;"></i>
+        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.6rem;">Transmission Received</h4>
+        <p style="color: var(--text-sub); font-size: 0.95rem;">
+          Your 25 Round 1 quiz answers have been logged into the backend database. The system is now awaiting <strong>Admin Selection & Approval</strong> to unlock Round 2.
+        </p>
+      </div>
+      <div class="modal-foot center" style="border-top-color: rgba(16, 185, 129, 0.3);">
+        <button class="pro-btn primary lg" style="background: #10b981; border-color: #10b981; width: 100%; font-weight: bold;" onclick="closeModal('modal-r1-submitted')">
+          <i class="fa-solid fa-thumbs-up"></i> OK, Got It!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VICTORY MODAL WITH PERSONALIZED CERTIFICATE -->
+  <div class="modal-overlay" id="modal-victory">
+    <div class="modal-card" style="border-color: var(--accent-gold);">
+      <div class="modal-head">
+        <h3 style="color: var(--accent-gold);"><i class="fa-solid fa-crown"></i> Challenge Completed!</h3>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <i class="fa-solid fa-certificate" style="font-size: 3rem; color: var(--accent-gold);"></i>
+        <h2 style="font-size: 1.6rem; color: #fff; margin: 0.4rem 0;">Congratulations, Hackers!</h2>
+        <p style="font-size: 0.9rem; color: var(--text-sub);">You have successfully completed all 3 rounds of <strong>DECRYPT OR DIE</strong>!</p>
+
+        <div class="cert-box">
+          <div class="cert-head">Database Registration & Achievement Record</div>
+          <div class="cert-line"><span>Participant:</span> <strong id="v-participant">Alex Mercer</strong></div>
+          <div class="cert-line"><span>Team:</span> <strong id="v-team">Cipher Knights</strong></div>
+          <div class="cert-line"><span>College:</span> <strong id="v-college">National Institute of Tech</strong></div>
+          <div class="cert-line"><span>Mobile:</span> <strong id="v-mobile">+91 9876543210</strong></div>
+          <div class="cert-line"><span>Team Hash:</span> <strong id="v-hash">#CYBER-8921</strong></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; background: var(--bg-dark); padding: 0.9rem; border-radius: 6px;">
+          <div><div style="font-size: 0.7rem; color: var(--text-muted);">FINAL TIME</div><strong id="v-final-time">00:00</strong></div>
+        </div>
+      </div>
+      <div class="modal-foot center">
+        <button class="pro-btn primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Result</button>
+        <button class="pro-btn" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div class="modal-overlay" id="modal-admin-login">
+    <div class="modal-card" style="width: 420px; border-color: var(--accent-gold);">
+      <div class="modal-head">
+        <h3 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Admin Portal Login</h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeModal('modal-admin-login')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-login-form" onsubmit="return handleAdminLoginSubmit(event)">
+          <div class="form-field" style="margin-bottom: 1rem;">
+            <label for="admin-name-input">Admin Name</label>
+            <input type="text" id="admin-name-input" class="text-input" placeholder="Enter Admin Name" required autocomplete="off" />
+          </div>
+
+          <div class="form-field" style="margin-bottom: 1rem;">
+            <label for="admin-key-input">Admin Key / Password</label>
+            <input type="password" id="admin-key-input" class="text-input" placeholder="Enter Admin Key" required autocomplete="off" />
+          </div>
+
+          <div id="admin-login-status" style="min-height: 20px; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.8rem;"></div>
+
+          <button type="submit" class="pro-btn primary lg" style="width: 100%; background: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: 800;">
+            <i class="fa-solid fa-right-to-bracket"></i> Login to Admin Portal
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD MODAL -->
+  <div class="modal-overlay" id="modal-admin-dashboard">
+    <div class="modal-card" style="width: 1200px; max-width: 95vw; border-color: var(--accent-gold);">
+      <div class="modal-head">
+        <h3 style="color: var(--accent-gold); display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-database"></i> Admin Correction Portal & Database Live Viewer
+        </h3>
+        <button style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;" onclick="closeModal('modal-admin-dashboard')">&times;</button>
+      </div>
+      <div class="modal-body" style="gap: 1rem;">
+        
+        <!-- Summary Cards -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+          <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.9rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-sub);">TOTAL TEAMS</div>
+            <strong id="adm-total-teams" style="font-size: 1.6rem; color: var(--accent-blue);">0</strong>
+          </div>
+          <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.9rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-sub);">R2 QUALIFIED</div>
+            <strong id="adm-r2-completed" style="font-size: 1.6rem; color: var(--accent-blue);">0</strong>
+          </div>
+          <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.9rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-sub);">R3 QUALIFIED</div>
+            <strong id="adm-r3-completed" style="font-size: 1.6rem; color: var(--accent-green);">0</strong>
+          </div>
+          <div style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.9rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-sub);">HIGHEST SCORE</div>
+            <strong id="adm-high-score" style="font-size: 1.6rem; color: var(--accent-gold);">0 PTS</strong>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+          <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 550px;">
+            <input type="text" id="adm-search-input" class="text-input" placeholder="Search team, participant, or college..." style="flex: 1;" onkeyup="filterAdminTable()" />
+            <select id="adm-filter-select" class="text-input" style="width: auto; cursor: pointer; padding: 0.5rem 1rem;" onchange="filterAdminTable()">
+              <option value="all">All Teams</option>
+              <option value="r2_selected">Round 2 Selected</option>
+              <option value="r3_selected">Round 3 Selected</option>
+              <option value="disqualified">Disqualified</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 0.8rem;">
+            <button class="pro-btn sm" onclick="loadAdminDatabase()"><i class="fa-solid fa-rotate"></i> Refresh MongoDB</button>
+            <button class="pro-btn primary sm" onclick="exportAdminCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+          </div>
+        </div>
+
+        <!-- Participant Table -->
+        <div style="overflow-x: auto; max-height: 45vh; border: 1px solid var(--border-color); border-radius: 8px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; white-space: nowrap;">
+            <thead>
+              <tr style="background: var(--bg-dark); color: var(--text-sub); border-bottom: 1px solid var(--border-color);">
+                <th style="padding: 0.75rem 0.9rem;">#</th>
+                <th style="padding: 0.75rem 0.9rem;">Team Name</th>
+                <th style="padding: 0.75rem 0.9rem;">Team Hash (ID)</th>
+                <th style="padding: 0.75rem 0.9rem;">R1 Correct</th>
+                <th style="padding: 0.75rem 0.9rem;">R1 Score</th>
+                <th style="padding: 0.75rem 0.9rem;">R1 Time</th>
+                <th style="padding: 0.75rem 0.9rem;">Select Action</th>
+                <th style="padding: 0.75rem 0.9rem;">Correction Status</th>
+              </tr>
+            </thead>
+            <tbody id="adm-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="modal-foot">
+        <button class="pro-btn primary" onclick="closeModal('modal-admin-dashboard')">Close Portal</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

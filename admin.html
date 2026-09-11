@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DECRYPT OR DIE | Admin Correction Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-input: #0b1120;
+      --border-color: rgba(255, 255, 255, 0.12);
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-gold: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #f9fafb;
+      --text-sub: #9ca3af;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg-dark); color: var(--text-main); font-family: var(--font-stack); min-height: 100vh; padding: 1.5rem; }
+
+    .admin-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+    
+    .admin-header {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-title { font-size: 1.4rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; gap: 0.6rem; }
+    .brand-sub { font-size: 0.85rem; color: var(--text-sub); }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .stat-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.2rem; text-align: center; }
+    .stat-val { font-size: 2.2rem; font-weight: 800; margin-top: 0.3rem; }
+    .blue-txt { color: var(--accent-blue); }
+    .green-txt { color: var(--accent-green); }
+    .gold-txt { color: var(--accent-gold); }
+
+    .data-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+
+    .search-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: #fff;
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
+      width: 320px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent-blue); }
+
+    .btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.88rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .btn:hover { background: #374151; }
+    .btn.primary { background: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: 800; }
+    .btn.primary:hover { background: #d97706; }
+
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; margin-top: 0.5rem; white-space: nowrap; }
+    th, td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); }
+    th { background: var(--bg-dark); color: var(--text-sub); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    .status-tag { padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem; display: inline-block; }
+    .status-tag.waiting { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .status-tag.pending { background: rgba(156, 163, 175, 0.15); color: var(--text-sub); border: 1px solid var(--border-color); }
+
+    /* Login Screen */
+    .login-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    .login-box { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; width: 420px; max-width: 90vw; display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.85rem; color: var(--text-sub); font-weight: 600; }
+    .form-group input { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.7rem 1rem; color: #fff; outline: none; font-size: 0.9rem; }
+    .form-group input:focus { border-color: var(--accent-gold); }
+  </style>
+</head>
+<body>
+
+  <!-- ADMIN LOGIN OVERLAY -->
+  <div class="login-overlay" id="admin-login-screen">
+    <div class="login-box">
+      <div>
+        <h2 style="color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-user-shield"></i> Admin Portal Login</h2>
+        <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 0.3rem;">Department of Information & Technology</p>
+      </div>
+
+      <form onsubmit="return handleAdminLogin(event)">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Admin Name</label>
+          <input type="text" id="adm-user" placeholder="Enter Admin Name" required autocomplete="off" />
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Admin Key / Password</label>
+          <input type="password" id="adm-pass" placeholder="Enter Admin Key" required autocomplete="off" />
+        </div>
+        <div id="adm-err" style="color: var(--accent-red); font-size: 0.82rem; font-weight: 700; min-height: 20px;"></div>
+        <button type="submit" class="btn primary" style="width: 100%; justify-content: center; padding: 0.8rem; margin-top: 0.5rem;">
+          <i class="fa-solid fa-right-to-bracket"></i> Login to Admin Portal
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN ADMIN DASHBOARD CONTAINER -->
+  <div class="admin-container" id="admin-main-dashboard" style="display: none;">
+    <header class="admin-header">
+      <div>
+        <div class="brand-title"><i class="fa-solid fa-crown"></i> DECRYPT OR DIE - ADMIN CORRECTION PORTAL</div>
+        <div class="brand-sub">Department of Information & Technology | Live MongoDB Database Metrics</div>
+      </div>
+      <div>
+        <button class="btn" onclick="location.href='/'"><i class="fa-solid fa-house"></i> Main Website</button>
+        <button class="btn" onclick="logoutAdmin()"><i class="fa-solid fa-power-off"></i> Logout</button>
+      </div>
+    </header>
+
+    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="stat-card">
+        <div class="brand-sub">TOTAL TEAMS</div>
+        <div class="stat-val blue-txt" id="cnt-teams">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="brand-sub">R2 QUALIFIED</div>
+        <div class="stat-val blue-txt" id="cnt-r2" style="color: var(--accent-blue);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="brand-sub">R3 QUALIFIED</div>
+        <div class="stat-val green-txt" id="cnt-r3" style="color: var(--accent-green);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="brand-sub">HIGHEST SCORE</div>
+        <div class="stat-val gold-txt" id="cnt-score">0 PTS</div>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="card-top">
+        <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 550px;">
+          <input type="text" id="admin-search" class="search-input" placeholder="Search team, participant, or college..." style="flex: 1;" onkeyup="filterTable()" />
+          <select id="admin-filter" class="search-input" style="width: auto; cursor: pointer; padding: 0.5rem 1rem;" onchange="filterTable()">
+            <option value="all">All Teams</option>
+            <option value="r2_selected">Round 2 Selected</option>
+            <option value="r3_selected">Round 3 Selected</option>
+            <option value="disqualified">Disqualified</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 0.8rem;">
+          <button class="btn" onclick="fetchLiveDatabase()"><i class="fa-solid fa-rotate"></i> Refresh MongoDB</button>
+          <button class="btn primary" onclick="exportToCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table>
+            <thead>
+              <tr style="background: var(--bg-dark); color: var(--text-sub); border-bottom: 1px solid var(--border-color);">
+                <th style="padding: 0.75rem 0.9rem;">#</th>
+                <th style="padding: 0.75rem 0.9rem;">Team Name</th>
+                <th style="padding: 0.75rem 0.9rem;">Team Hash (ID)</th>
+                <th style="padding: 0.75rem 0.9rem;" id="col-r1-correct">R1 Correct</th>
+                <th style="padding: 0.75rem 0.9rem;" id="col-score">R1 Score</th>
+                <th style="padding: 0.75rem 0.9rem;" id="col-time">R1 Time</th>
+                <th style="padding: 0.75rem 0.9rem;">Select Action</th>
+                <th style="padding: 0.75rem 0.9rem;">Correction Status</th>
+              </tr>
+            </thead>
+          <tbody id="table-rows">
+            <!-- Rendered live -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allRecords = [];
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('adm-user').value.trim();
+      const pass = document.getElementById('adm-pass').value.trim();
+      const err = document.getElementById('adm-err');
+
+      if ((user.toLowerCase() === 'decrypt') && (pass === 'Gokul#126')) {
+        document.getElementById('admin-login-screen').style.display = 'none';
+        document.getElementById('admin-main-dashboard').style.display = 'flex';
+        fetchLiveDatabase();
+      } else {
+        err.innerText = 'Invalid Admin Name or Key.';
+      }
+      return false;
+    }
+
+    function logoutAdmin() {
+      document.getElementById('admin-login-screen').style.display = 'flex';
+      document.getElementById('admin-main-dashboard').style.display = 'none';
+    }
+
+    async function fetchLiveDatabase() {
+      try {
+        const res = await fetch('/api/registrations');
+        const data = await res.json();
+        if (data.success) {
+          allRecords = data.data || [];
+          renderAdminTable(allRecords);
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+      }
+    }
+
+    async function approveParticipantRound2(teamHash) {
+      try {
+        const res = await fetch('/api/approve-round2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamHash })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`APPROVED FOR ROUND 2!\n\n${data.message}`);
+          fetchLiveDatabase();
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      } catch (err) {
+        alert(`Failed to approve: ${err.message}`);
+      }
+    }
+
+    async function approveParticipantRound3(teamHash) {
+      if(!confirm('Approve this team for ROUND 3?')) return;
+      try {
+        const serverUrl = window.location.origin.startsWith('http') ? '/api/approve-round3' : 'http://localhost:8080/api/approve-round3';
+        const res = await fetch(serverUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamHash })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`APPROVED FOR ROUND 3!\n\n${data.message}`);
+          fetchLiveDatabase();
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      } catch (err) {
+        alert(`Failed to approve for R3: ${err.message}`);
+      }
+    }
+
+    async function deleteTeamAdmin(id, teamName) {
+      if(!confirm(`Are you SURE you want to delete team "${teamName}"? This action cannot be undone.`)) return;
+      try {
+        const serverUrl = window.location.origin.startsWith('http') ? `/api/team/${id}` : `http://localhost:8080/api/team/${id}`;
+        const res = await fetch(serverUrl, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Team deleted successfully.');
+          fetchLiveDatabase();
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      } catch (err) {
+        alert(`Failed to delete team: ${err.message}`);
+      }
+    }
+
+    function formatLoginTime(dateVal) {
+      if (!dateVal) return '-';
+      try {
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+      } catch (e) {
+        return '-';
+      }
+    }
+
+    function renderAdminTable(records) {
+      const tbody = document.getElementById('table-rows');
+      tbody.innerHTML = '';
+
+      let r2SelectedCount = 0;
+      let r3SelectedCount = 0;
+      let maxScore = 0;
+
+      document.getElementById('cnt-teams').innerText = records.length;
+
+      if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: var(--text-sub); padding: 2rem;">No participant records found in MongoDB database.</td></tr>';
+        document.getElementById('cnt-r2').innerText = '0';
+        document.getElementById('cnt-r3').innerText = '0';
+        document.getElementById('cnt-score').innerText = '0 PTS';
+        return;
+      }
+
+      // Sort records in descending order of Round 1 Score
+      records.sort((a, b) => {
+        const r1A = a.round1Score || 0;
+        const r1B = b.round1Score || 0;
+        if (r1B !== r1A) return r1B - r1A;
+        return new Date(b.registeredAt || 0) - new Date(a.registeredAt || 0);
+      });
+
+      const currentFilter = document.getElementById('admin-filter') ? document.getElementById('admin-filter').value : 'all';
+
+      const colScore = document.getElementById('col-score');
+      const colTime = document.getElementById('col-time');
+      if (colScore && colTime) {
+        if (currentFilter === 'r2_selected') {
+          colScore.innerText = 'R2 Score';
+          colTime.innerText = 'R2 Time';
+        } else if (currentFilter === 'r3_selected') {
+          colScore.innerText = 'R3 Score';
+          colTime.innerText = 'R3 Time';
+        } else {
+          colScore.innerText = 'R1 Score';
+          colTime.innerText = 'R1 Time';
+        }
+      }
+
+      records.forEach((rec, idx) => {
+        if (rec.round3Approved) {
+          r3SelectedCount++;
+        } else if (rec.round2Approved) {
+          r2SelectedCount++;
+        }
+        
+        if ((rec.round1Score || 0) > maxScore) maxScore = rec.round1Score;
+
+        const tr = document.createElement('tr');
+        const loginTimeStr = formatLoginTime(rec.registeredAt);
+        const isDisqualifiedRec = rec.disqualified || (rec.tabSwitchCount >= 2);
+
+        let actionBtn = '';
+        let statusBadge = '';
+
+        // Add visual highlighting to the row based on status
+        tr.style.transition = 'all 0.3s ease';
+
+        if (rec.round3Approved) {
+          tr.style.backgroundColor = 'rgba(16, 185, 129, 0.08)';
+          tr.style.borderLeft = '4px solid var(--accent-green)';
+          actionBtn = '<button class="btn success" disabled style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border-color: var(--accent-green); cursor: default; font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</button>';
+          statusBadge = '<span class="status-tag" style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border: 1px solid var(--accent-green); font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</span>';
+        } else if (rec.round2Approved) {
+          tr.style.backgroundColor = 'rgba(59, 130, 246, 0.08)';
+          tr.style.borderLeft = '4px solid var(--accent-blue)';
+          
+          if (currentFilter === 'all') {
+            actionBtn = `<button class="btn success" disabled style="background: rgba(59, 130, 246, 0.25); color: var(--accent-blue); border-color: var(--accent-blue); cursor: default; font-weight: 700;"><i class="fa-solid fa-check"></i> R2 Selected</button>`;
+          } else {
+            actionBtn = `<button class="btn warning" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound3('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Select for R3</button>`;
+          }
+          statusBadge = '<span class="status-tag" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue);"><i class="fa-solid fa-check"></i> R2 Selected</span>';
+        } else if (isDisqualifiedRec) {
+          tr.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
+          tr.style.borderLeft = '4px solid var(--accent-red)';
+          actionBtn = `<button class="btn warning" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Override & Select R2</button>`;
+          statusBadge = `<span class="status-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);" title="${escapeHtml(rec.disqualificationReason || 'Incident Reported')}"><i class="fa-solid fa-triangle-exclamation"></i> Disqualified</span>`;
+        } else {
+          tr.style.borderLeft = '4px solid transparent';
+          actionBtn = `<button class="btn primary" style="background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Select for R2</button>`;
+          statusBadge = rec.round1Completed 
+            ? '<span class="status-tag waiting" style="white-space: nowrap;"><i class="fa-solid fa-circle-check"></i> Wait Selection</span>'
+            : '<span class="status-tag pending" style="white-space: nowrap;"><i class="fa-solid fa-hourglass-start"></i> Not Completed</span>';
+        }
+        
+        // Add delete button
+        actionBtn += ` <button class="btn danger" style="background: rgba(239, 68, 68, 0.2); border-color: var(--accent-red); color: var(--accent-red); font-weight: 700; margin-left: 0.5rem; padding: 0.5rem 0.75rem;" onclick="deleteTeamAdmin('${rec._id}', '${escapeHtml(rec.teamName)}')"><i class="fa-solid fa-trash"></i></button>`;
+
+        function formatSecs(s) {
+          if (!s || s <= 0) return '-';
+          const m = Math.floor(s / 60);
+          const sec = s % 60;
+          return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        }
+
+        const r1Correct = rec.round1CorrectCount !== undefined ? `${rec.round1CorrectCount} / 25` : '-';
+        let r1Score = rec.round1Score !== undefined ? `${rec.round1Score} PTS` : '0 PTS';
+        let r1Time = formatSecs(rec.round1TimeTakenSeconds);
+
+        if (currentFilter === 'r2_selected') {
+          r1Score = rec.round2Score !== undefined ? `${rec.round2Score} PTS` : '0 PTS';
+          r1Time = formatSecs(rec.round2TimeTakenSeconds);
+        } else if (currentFilter === 'r3_selected') {
+          r1Score = rec.round3Score !== undefined ? `${rec.round3Score} PTS` : '0 PTS';
+          r1Time = formatSecs(rec.round3TimeTakenSeconds);
+        }
+
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>
+            <strong style="color: #fff;">${escapeHtml(rec.teamName)}</strong>
+            <div style="font-size: 0.73rem; color: var(--text-sub); margin-top: 0.15rem; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap;">
+              <i class="fa-regular fa-clock" style="color: var(--accent-gold); font-size: 0.7rem;"></i> Logged in: <span style="color: #e5e7eb; font-weight: 600;">${loginTimeStr}</span>
+            </div>
+          </td>
+          <td><code style="color: var(--accent-blue);">${escapeHtml(rec.teamHash || '#TEAM-0000')}</code></td>
+          <td>${r1Correct}</td>
+          <td><strong style="color: ${isDisqualifiedRec ? 'var(--accent-red)' : 'var(--accent-green)'}; font-size: 0.95rem;">${r1Score}</strong></td>
+          <td><span style="font-family: var(--font-mono); color: #e5e7eb;">${r1Time}</span></td>
+          <td>${actionBtn}</td>
+          <td>${statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('cnt-r2').innerText = r2SelectedCount;
+      document.getElementById('cnt-r3').innerText = r3SelectedCount;
+      document.getElementById('cnt-score').innerText = `${maxScore} PTS`;
+    }
+
+    function filterTable() {
+      const query = document.getElementById('admin-search').value.toLowerCase().trim();
+      const filterStatus = document.getElementById('admin-filter').value;
+
+      const filtered = allRecords.filter(r => {
+        const matchesSearch = !query || 
+          (r.teamName || '').toLowerCase().includes(query) ||
+          (r.participantName || '').toLowerCase().includes(query) ||
+          (r.collegeName || '').toLowerCase().includes(query) ||
+          (r.mobileNumber || '').toLowerCase().includes(query) ||
+          (r.teamHash || '').toLowerCase().includes(query);
+
+        let matchesStatus = true;
+        if (filterStatus === 'r2_selected') {
+          matchesStatus = !!r.round2Approved;
+        } else if (filterStatus === 'r3_selected') {
+          matchesStatus = !!r.round3Approved;
+        } else if (filterStatus === 'disqualified') {
+          matchesStatus = !!r.disqualified || (r.tabSwitchCount >= 2);
+        }
+
+        return matchesSearch && matchesStatus;
+      });
+
+      renderAdminTable(filtered);
+    }
+
+    function exportToCSV() {
+      if (allRecords.length === 0) {
+        alert('No records available to export.');
+        return;
+      }
+
+      function formatSecs(s) {
+        if (!s || s <= 0) return '00:00';
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+      }
+
+      let csv = 'S.No,Team Name,Participant Name,College Name,Mobile Number,Team Hash,R1 Correct,R1 Score,R1 Time,Status,Registration Date\n';
+      allRecords.forEach((r, idx) => {
+        let status = 'In Progress';
+        if (r.disqualified || (r.tabSwitchCount >= 2)) status = 'Disqualified';
+        else if (r.round3Approved) status = 'Round 3 Selected';
+        else if (r.round2Approved) status = 'Round 2 Selected';
+        else if (r.round1Completed) status = 'Round 1 Completed';
+
+        const r1T = formatSecs(r.round1TimeTakenSeconds);
+        csv += `"${idx+1}","${r.teamName}","${r.participantName}","${r.collegeName}","${r.mobileNumber}","${r.teamHash}","${r.round1CorrectCount || 0}","${r.round1Score || 0}","${r1T}","${status}","${r.registeredAt}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `decrypt_or_die_participants_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
