@@ -43,7 +43,8 @@ const registrationSchema = new mongoose.Schema({
   disqualificationReason: { type: String, default: '' },
   incidentReport: { type: Object, default: null },
   round2Approved: { type: Boolean, default: false },
-  round3Approved: { type: Boolean, default: false }
+  round3Approved: { type: Boolean, default: false },
+  winnerRank: { type: Number, default: 0 }
 });
 
 const Registration = mongoose.model('Registration', registrationSchema);
@@ -469,6 +470,30 @@ app.post('/api/approve-round3', async (req, res) => {
   }
 });
 
+// POST /api/approve-round2-bulk -> Bulk approve
+app.post('/api/approve-round2-bulk', async (req, res) => {
+  const { teamHashes } = req.body;
+  if (!Array.isArray(teamHashes)) return res.status(400).json({ success: false, message: 'Invalid team hashes array.' });
+  try {
+    await Registration.updateMany({ teamHash: { $in: teamHashes } }, { $set: { round2Approved: true, disqualified: false, disqualificationReason: '', tabSwitchCount: 0 } });
+    return res.json({ success: true, message: `Successfully approved ${teamHashes.length} teams for Round 2!` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/approve-round3-bulk -> Bulk approve
+app.post('/api/approve-round3-bulk', async (req, res) => {
+  const { teamHashes } = req.body;
+  if (!Array.isArray(teamHashes)) return res.status(400).json({ success: false, message: 'Invalid team hashes array.' });
+  try {
+    await Registration.updateMany({ teamHash: { $in: teamHashes } }, { $set: { round3Approved: true, disqualified: false, disqualificationReason: '', tabSwitchCount: 0 } });
+    return res.json({ success: true, message: `Successfully approved ${teamHashes.length} teams for Round 3!` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // GET /api/participant-status -> Polling endpoint for participant status sync
 app.get('/api/participant-status', async (req, res) => {
   const { teamHash, participantName, teamName } = req.query;
@@ -540,6 +565,41 @@ app.post('/api/questions', (req, res) => {
     fs.writeFileSync(filePath, JSON.stringify(questions, null, 2), 'utf-8');
     console.log(`\n[QUESTION BANK UPDATED] Saved ${questions.length} questions to questions.json\n`);
     return res.json({ success: true, message: `Successfully saved ${questions.length} questions to questions.json`, questions });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/declare-winner -> Declare winner (Rank 1, 2, 3)
+app.post('/api/admin/declare-winner', async (req, res) => {
+  const { teamHash, rank } = req.body;
+  if (!teamHash || !rank) {
+    return res.status(400).json({ success: false, message: 'teamHash and rank are required.' });
+  }
+  
+  try {
+    const record = await Registration.findOne({ teamHash });
+    if (!record) {
+      return res.status(404).json({ success: false, message: 'Team not found.' });
+    }
+    
+    // Clear any existing team with this rank to prevent duplicates
+    await Registration.updateMany({ winnerRank: rank }, { $set: { winnerRank: 0 } });
+    
+    record.winnerRank = Number(rank);
+    await record.save();
+    
+    return res.json({ success: true, message: `Team set as rank ${rank} winner.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/winners -> Fetch top 3 winners
+app.get('/api/winners', async (req, res) => {
+  try {
+    const winners = await Registration.find({ winnerRank: { $gt: 0 } }).sort({ winnerRank: 1 });
+    return res.json({ success: true, winners });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
   }

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winners - Decrypt or Die</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #020617;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Effects */
+    .bg-glow-gold {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: rgba(245, 158, 11, 0.1);
+      filter: blur(150px);
+      z-index: 0;
+      animation: pulse 4s infinite alternate;
+      pointer-events: none;
+    }
+
+    .bg-glow-blue {
+      position: absolute;
+      bottom: -10%;
+      left: 20%;
+      width: 400px;
+      height: 400px;
+      background: rgba(59, 130, 246, 0.1);
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-glow-green {
+      position: absolute;
+      top: -10%;
+      right: 20%;
+      width: 400px;
+      height: 400px;
+      background: rgba(16, 185, 129, 0.1);
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    }
+
+    .winners-header {
+      text-align: center;
+      z-index: 10;
+      margin-bottom: 4rem;
+    }
+
+    .winners-header h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 0;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    }
+
+    .winners-header p {
+      color: var(--accent-gold);
+      font-size: 1.2rem;
+      font-family: var(--font-mono);
+      margin-top: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* Podium Layout */
+    .podium-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 2rem;
+      z-index: 10;
+      min-height: 400px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .podium-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .podium-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .podium-card.rank-1 {
+      order: 2;
+      width: 320px;
+      height: 380px;
+      border-color: rgba(245, 158, 11, 0.5);
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.2), inset 0 0 20px rgba(245, 158, 11, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .podium-card.rank-2 {
+      order: 1;
+      width: 280px;
+      height: 320px;
+      border-color: rgba(148, 163, 184, 0.5);
+      box-shadow: 0 0 30px rgba(148, 163, 184, 0.15), inset 0 0 15px rgba(148, 163, 184, 0.05);
+    }
+
+    .podium-card.rank-3 {
+      order: 3;
+      width: 280px;
+      height: 280px;
+      border-color: rgba(180, 83, 9, 0.5);
+      box-shadow: 0 0 30px rgba(180, 83, 9, 0.15), inset 0 0 15px rgba(180, 83, 9, 0.05);
+    }
+
+    .rank-badge {
+      position: absolute;
+      top: -25px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #000;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    .rank-1 .rank-badge {
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      width: 70px;
+      height: 70px;
+      font-size: 1.8rem;
+      top: -35px;
+    }
+
+    .rank-2 .rank-badge {
+      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+    }
+
+    .rank-3 .rank-badge {
+      background: linear-gradient(135deg, #fcd34d 0%, #b45309 100%);
+      color: #fff;
+    }
+
+    .team-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-top: 1.5rem;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .rank-1 .team-name {
+      font-size: 2rem;
+      color: var(--accent-gold);
+    }
+
+    .team-hash {
+      font-family: var(--font-mono);
+      color: var(--accent-blue);
+      font-size: 1rem;
+      background: rgba(59, 130, 246, 0.1);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+    }
+
+    .score-box {
+      margin-top: auto;
+      background: rgba(0,0,0,0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .score-label {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .score-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent-green);
+    }
+
+    .rank-1 .score-val {
+      font-size: 2rem;
+    }
+
+    #loading-state {
+      position: absolute;
+      z-index: 20;
+      color: var(--accent-gold);
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow-gold"></div>
+  <div class="bg-glow-blue"></div>
+  <div class="bg-glow-green"></div>
+
+  <div class="winners-header">
+    <h1>Hall of Fame</h1>
+    <p><i class="fa-solid fa-trophy"></i> DECRYPT OR DIE WINNERS</p>
+  </div>
+
+  <div id="loading-state">
+    <i class="fa-solid fa-circle-notch fa-spin fa-3x"></i>
+    <div style="margin-top: 1rem;">Accessing Mainframe Archives...</div>
+  </div>
+
+  <div class="podium-container" id="podium-container" style="display: none;">
+    <!-- Podium cards will be injected here via JS -->
+  </div>
+
+  <script>
+    async function loadWinners() {
+      try {
+        const serverUrl = window.location.origin.startsWith('http') ? '/api/winners' : 'http://localhost:8080/api/winners';
+        const res = await fetch(serverUrl);
+        const data = await res.json();
+        
+        document.getElementById('loading-state').style.display = 'none';
+        
+        if (data.success && data.winners.length > 0) {
+          const container = document.getElementById('podium-container');
+          container.style.display = 'flex';
+          container.innerHTML = '';
+          
+          data.winners.forEach(winner => {
+            const totalScore = (winner.round1Score || 0) + (winner.round2Score || 0) + (winner.round3Score || 0);
+            const rank = winner.winnerRank;
+            
+            let icon = 'fa-medal';
+            if(rank === 1) icon = 'fa-trophy';
+            
+            const cardHtml = `
+              <div class="podium-card rank-${rank}">
+                <div class="rank-badge"><i class="fa-solid ${icon}"></i></div>
+                <div class="team-name">${escapeHtml(winner.teamName)}</div>
+                <div class="team-hash">${escapeHtml(winner.teamHash)}</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.8rem; margin-bottom: 0.8rem;">
+                  ${escapeHtml(winner.collegeName)}
+                </div>
+                <div class="score-box">
+                  <div class="score-label">TOTAL SCORE</div>
+                  <div class="score-val">${totalScore}</div>
+                </div>
+              </div>
+            `;
+            container.innerHTML += cardHtml;
+          });
+        } else {
+          document.getElementById('podium-container').style.display = 'flex';
+          document.getElementById('podium-container').innerHTML = `
+            <div style="text-align: center; color: var(--text-sub); font-size: 1.2rem; background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 12px; border: 1px dashed var(--border-color); backdrop-filter: blur(10px);">
+              <i class="fa-solid fa-hourglass-half fa-spin" style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-gold);"></i><br/>
+              The administrators have not declared any winners yet.<br/>
+              Please check back later!
+            </div>
+          `;
+        }
+      } catch (err) {
+        document.getElementById('loading-state').innerHTML = `<div style="color: red;"><i class="fa-solid fa-triangle-exclamation"></i> Failed to fetch winners: ${err.message}</div>`;
+      }
+    }
+
+    function escapeHtml(unsafe) {
+      if (!unsafe) return '';
+      return unsafe
+           .toString()
+           .replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#039;");
+    }
+
+    window.onload = loadWinners;
+  </script>
+</body>
+</html>

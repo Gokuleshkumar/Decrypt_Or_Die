@@ -86,6 +86,17 @@
     tr:hover td { background: rgba(255, 255, 255, 0.02); }
 
     .status-tag { padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem; display: inline-block; }
+    
+    /* Tabs & Bulk Action UI */
+    .tabs-container { display: flex; gap: 0.2rem; background: rgba(0,0,0,0.3); padding: 0.3rem; border-radius: 8px; border: 1px solid var(--border-color); }
+    .tab-btn { background: transparent; border: none; color: var(--text-sub); padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .tab-btn.active { background: var(--bg-card); color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); }
+    
+    .bulk-toolbar { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border: 1px solid var(--accent-blue); padding: 1rem 1.5rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 50; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; pointer-events: none; }
+    .bulk-toolbar.visible { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+    
+    .checkbox-custom { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-blue); }
     .status-tag.waiting { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid rgba(245, 158, 11, 0.3); }
     .status-tag.pending { background: rgba(156, 163, 175, 0.15); color: var(--text-sub); border: 1px solid var(--border-color); }
 
@@ -158,19 +169,23 @@
     </div>
 
     <div class="data-card">
-      <div class="card-top">
-        <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 550px;">
-          <input type="text" id="admin-search" class="search-input" placeholder="Search team, participant, or college..." style="flex: 1;" onkeyup="filterTable()" />
-          <select id="admin-filter" class="search-input" style="width: auto; cursor: pointer; padding: 0.5rem 1rem;" onchange="filterTable()">
-            <option value="all">All Teams</option>
-            <option value="r2_selected">Round 2 Selected</option>
-            <option value="r3_selected">Round 3 Selected</option>
-            <option value="disqualified">Disqualified</option>
-          </select>
+      <div class="card-top" style="flex-direction: column; align-items: flex-start;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div class="tabs-container" id="admin-tabs">
+            <button class="tab-btn active" onclick="setFilter('all')">All Teams</button>
+            <button class="tab-btn" onclick="setFilter('r2_selected')">Round 2 Selected</button>
+            <button class="tab-btn" onclick="setFilter('r3_selected')">Round 3 Selected</button>
+            <button class="tab-btn" onclick="setFilter('winners')">Winners</button>
+            <button class="tab-btn" onclick="setFilter('disqualified')">Disqualified</button>
+          </div>
+          <div style="display: flex; gap: 0.8rem;">
+            <button class="btn sm" onclick="loadAdminDatabase()"><i class="fa-solid fa-rotate"></i> Refresh DB</button>
+            <button class="btn primary sm" onclick="exportAdminCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+            <button class="btn warning sm" onclick="window.open('winners.html', '_blank')"><i class="fa-solid fa-trophy"></i> View Winners</button>
+          </div>
         </div>
-        <div style="display: flex; gap: 0.8rem;">
-          <button class="btn" onclick="fetchLiveDatabase()"><i class="fa-solid fa-rotate"></i> Refresh MongoDB</button>
-          <button class="btn primary" onclick="exportToCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+        <div style="display: flex; gap: 0.5rem; max-width: 400px; width: 100%;">
+          <input type="text" id="admin-search" class="search-input" placeholder="Search team, participant, or college..." style="flex: 1;" onkeyup="filterTable()" />
         </div>
       </div>
 
@@ -178,6 +193,7 @@
         <table>
             <thead>
               <tr style="background: var(--bg-dark); color: var(--text-sub); border-bottom: 1px solid var(--border-color);">
+                <th style="padding: 0.75rem 0.9rem; width: 40px;"><input type="checkbox" id="selectAllCheckbox" class="checkbox-custom" onclick="toggleSelectAll(this)" /></th>
                 <th style="padding: 0.75rem 0.9rem;">#</th>
                 <th style="padding: 0.75rem 0.9rem;">Team Name</th>
                 <th style="padding: 0.75rem 0.9rem;">Team Hash (ID)</th>
@@ -195,9 +211,19 @@
       </div>
     </div>
   </div>
+  
+  <div class="bulk-toolbar" id="bulk-toolbar">
+    <div style="color: #fff; font-weight: 700;"><span id="sel-count">0</span> Selected</div>
+    <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.2);"></div>
+    <div style="display: flex; gap: 0.5rem;" id="bulk-actions">
+       <!-- actions injected here -->
+    </div>
+  </div>
 
   <script>
     let allRecords = [];
+    let currentFilter = 'all';
+    let selectedHashes = new Set();
 
     function handleAdminLogin(e) {
       e.preventDefault();
@@ -208,7 +234,7 @@
       if ((user.toLowerCase() === 'decrypt') && (pass === 'Gokul#126')) {
         document.getElementById('admin-login-screen').style.display = 'none';
         document.getElementById('admin-main-dashboard').style.display = 'flex';
-        fetchLiveDatabase();
+        loadAdminDatabase();
       } else {
         err.innerText = 'Invalid Admin Name or Key.';
       }
@@ -220,7 +246,7 @@
       document.getElementById('admin-main-dashboard').style.display = 'none';
     }
 
-    async function fetchLiveDatabase() {
+    async function loadAdminDatabase() {
       try {
         const res = await fetch('/api/registrations');
         const data = await res.json();
@@ -233,6 +259,10 @@
       }
     }
 
+    async function fetchLiveDatabase() {
+      return loadAdminDatabase();
+    }
+
     async function approveParticipantRound2(teamHash) {
       try {
         const res = await fetch('/api/approve-round2', {
@@ -243,7 +273,7 @@
         const data = await res.json();
         if (data.success) {
           alert(`APPROVED FOR ROUND 2!\n\n${data.message}`);
-          fetchLiveDatabase();
+          loadAdminDatabase();
         } else {
           alert(`Error: ${data.message}`);
         }
@@ -264,12 +294,31 @@
         const data = await res.json();
         if (data.success) {
           alert(`APPROVED FOR ROUND 3!\n\n${data.message}`);
-          fetchLiveDatabase();
+          loadAdminDatabase();
         } else {
           alert(`Error: ${data.message}`);
         }
       } catch (err) {
         alert(`Failed to approve for R3: ${err.message}`);
+      }
+    }
+
+    async function declareWinner(teamHash, rank) {
+      if (!confirm(`Are you sure you want to declare this team as ${rank}${rank === '1' ? 'st' : rank === '2' ? 'nd' : 'rd'} Place Winner?`)) return;
+      try {
+        const res = await fetch('/api/admin/declare-winner', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamHash, rank })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadAdminDatabase();
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      } catch (err) {
+        alert(`Failed to declare winner: ${err.message}`);
       }
     }
 
@@ -321,26 +370,38 @@
         return;
       }
 
-      // Sort records in descending order of Round 1 Score
+      // currentFilter is global now
+
+      // Sort records dynamically based on active filter
       records.sort((a, b) => {
-        const r1A = a.round1Score || 0;
-        const r1B = b.round1Score || 0;
-        if (r1B !== r1A) return r1B - r1A;
+        let scoreA = a.round1Score || 0;
+        let scoreB = b.round1Score || 0;
+        if (currentFilter === 'r2_selected') {
+          scoreA = a.round2Score || 0;
+          scoreB = b.round2Score || 0;
+        } else if (currentFilter === 'r3_selected') {
+          scoreA = a.round3Score || 0;
+          scoreB = b.round3Score || 0;
+        }
+
+        if (scoreB !== scoreA) return scoreB - scoreA;
         return new Date(b.registeredAt || 0) - new Date(a.registeredAt || 0);
       });
 
-      const currentFilter = document.getElementById('admin-filter') ? document.getElementById('admin-filter').value : 'all';
-
+      const colCorrect = document.getElementById('col-r1-correct');
       const colScore = document.getElementById('col-score');
       const colTime = document.getElementById('col-time');
-      if (colScore && colTime) {
+      if (colScore && colTime && colCorrect) {
         if (currentFilter === 'r2_selected') {
+          colCorrect.innerText = 'R2 Correct';
           colScore.innerText = 'R2 Score';
           colTime.innerText = 'R2 Time';
         } else if (currentFilter === 'r3_selected') {
+          colCorrect.innerText = 'R3 Correct';
           colScore.innerText = 'R3 Score';
           colTime.innerText = 'R3 Time';
         } else {
+          colCorrect.innerText = 'R1 Correct';
           colScore.innerText = 'R1 Score';
           colTime.innerText = 'R1 Time';
         }
@@ -365,11 +426,28 @@
         // Add visual highlighting to the row based on status
         tr.style.transition = 'all 0.3s ease';
 
-        if (rec.round3Approved) {
+        if (isDisqualifiedRec) {
+          tr.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
+          tr.style.borderLeft = '4px solid var(--accent-red)';
+          actionBtn = `<button class="btn warning" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Clear Disqualification</button>`;
+          statusBadge = `<span class="status-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);" title="${escapeHtml(rec.disqualificationReason || 'Incident Reported')}"><i class="fa-solid fa-triangle-exclamation"></i> Disqualified</span>`;
+        } else if (rec.round3Approved) {
           tr.style.backgroundColor = 'rgba(16, 185, 129, 0.08)';
           tr.style.borderLeft = '4px solid var(--accent-green)';
-          actionBtn = '<button class="btn success" disabled style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border-color: var(--accent-green); cursor: default; font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</button>';
-          statusBadge = '<span class="status-tag" style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border: 1px solid var(--accent-green); font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</span>';
+          
+          if (currentFilter === 'r3_selected') {
+            actionBtn = `<select style="background: rgba(245, 158, 11, 0.1); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 0.4rem; border-radius: 4px; font-weight: bold; cursor: pointer; outline: none; margin-right: 0.5rem;" onchange="if(this.value) declareWinner('${escapeHtml(rec.teamHash)}', this.value)">
+              <option value="">Set Winner Rank...</option>
+              <option value="1" ${rec.winnerRank === 1 ? 'selected' : ''}>1st Place</option>
+              <option value="2" ${rec.winnerRank === 2 ? 'selected' : ''}>2nd Place</option>
+              <option value="3" ${rec.winnerRank === 3 ? 'selected' : ''}>3rd Place</option>
+            </select>`;
+          } else {
+             actionBtn = `<button class="btn success" disabled style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border-color: var(--accent-green); cursor: default; font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</button>`;
+          }
+          
+          let rankLabel = rec.winnerRank ? ` &nbsp;<span style="color: var(--accent-gold);">🏆 ${rec.winnerRank}${rec.winnerRank === 1 ? 'st' : rec.winnerRank === 2 ? 'nd' : 'rd'}</span>` : '';
+          statusBadge = `<span class="status-tag" style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border: 1px solid var(--accent-green); font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected${rankLabel}</span>`;
         } else if (rec.round2Approved) {
           tr.style.backgroundColor = 'rgba(59, 130, 246, 0.08)';
           tr.style.borderLeft = '4px solid var(--accent-blue)';
@@ -380,11 +458,6 @@
             actionBtn = `<button class="btn warning" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound3('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Select for R3</button>`;
           }
           statusBadge = '<span class="status-tag" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue);"><i class="fa-solid fa-check"></i> R2 Selected</span>';
-        } else if (isDisqualifiedRec) {
-          tr.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
-          tr.style.borderLeft = '4px solid var(--accent-red)';
-          actionBtn = `<button class="btn warning" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Override & Select R2</button>`;
-          statusBadge = `<span class="status-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);" title="${escapeHtml(rec.disqualificationReason || 'Incident Reported')}"><i class="fa-solid fa-triangle-exclamation"></i> Disqualified</span>`;
         } else {
           tr.style.borderLeft = '4px solid transparent';
           actionBtn = `<button class="btn primary" style="background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Select for R2</button>`;
@@ -403,19 +476,23 @@
           return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
         }
 
-        const r1Correct = rec.round1CorrectCount !== undefined ? `${rec.round1CorrectCount} / 25` : '-';
+        let r1Correct = rec.round1CorrectCount !== undefined ? `${rec.round1CorrectCount} / 25` : '-';
         let r1Score = rec.round1Score !== undefined ? `${rec.round1Score} PTS` : '0 PTS';
         let r1Time = formatSecs(rec.round1TimeTakenSeconds);
 
         if (currentFilter === 'r2_selected') {
+          r1Correct = rec.round2CorrectCount !== undefined ? `${rec.round2CorrectCount} / 6` : '-';
           r1Score = rec.round2Score !== undefined ? `${rec.round2Score} PTS` : '0 PTS';
           r1Time = formatSecs(rec.round2TimeTakenSeconds);
         } else if (currentFilter === 'r3_selected') {
+          r1Correct = rec.round3CorrectCount !== undefined ? `${rec.round3CorrectCount} / 16` : '-';
           r1Score = rec.round3Score !== undefined ? `${rec.round3Score} PTS` : '0 PTS';
           r1Time = formatSecs(rec.round3TimeTakenSeconds);
         }
 
+        const isChecked = selectedHashes.has(rec.teamHash);
         tr.innerHTML = `
+          <td><input type="checkbox" class="checkbox-custom row-checkbox" value="${escapeHtml(rec.teamHash)}" onchange="toggleSelectRow(this)" ${isChecked ? 'checked' : ''} /></td>
           <td>${idx + 1}</td>
           <td>
             <strong style="color: #fff;">${escapeHtml(rec.teamName)}</strong>
@@ -440,7 +517,7 @@
 
     function filterTable() {
       const query = document.getElementById('admin-search').value.toLowerCase().trim();
-      const filterStatus = document.getElementById('admin-filter').value;
+      const filterStatus = currentFilter;
 
       const filtered = allRecords.filter(r => {
         const matchesSearch = !query || 
@@ -451,12 +528,20 @@
           (r.teamHash || '').toLowerCase().includes(query);
 
         let matchesStatus = true;
-        if (filterStatus === 'r2_selected') {
-          matchesStatus = !!r.round2Approved;
-        } else if (filterStatus === 'r3_selected') {
-          matchesStatus = !!r.round3Approved;
-        } else if (filterStatus === 'disqualified') {
-          matchesStatus = !!r.disqualified || (r.tabSwitchCount >= 2);
+        const isDq = !!r.disqualified || (r.tabSwitchCount >= 2);
+
+        if (filterStatus === 'disqualified') {
+          matchesStatus = isDq;
+        } else {
+          if (isDq) {
+            matchesStatus = false;
+          } else if (filterStatus === 'r2_selected') {
+            matchesStatus = !!r.round2Approved;
+          } else if (filterStatus === 'r3_selected') {
+            matchesStatus = !!r.round3Approved;
+          } else if (filterStatus === 'winners') {
+            matchesStatus = !!r.winnerRank && r.winnerRank > 0;
+          }
         }
 
         return matchesSearch && matchesStatus;
@@ -501,6 +586,111 @@
     function escapeHtml(str) {
       if (!str) return '';
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // --- NEW TABS & BULK ACTION LOGIC ---
+    function setFilter(filterVal) {
+      currentFilter = filterVal;
+      
+      const btns = document.querySelectorAll('.tab-btn');
+      btns.forEach(btn => btn.classList.remove('active'));
+      const exact = Array.from(btns).find(b => b.getAttribute('onclick').includes(filterVal));
+      if(exact) exact.classList.add('active');
+      
+      filterTable();
+      updateBulkToolbar();
+    }
+
+    function toggleSelectAll(masterCheckbox) {
+      const checkboxes = document.querySelectorAll('.row-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = masterCheckbox.checked;
+        if (masterCheckbox.checked) selectedHashes.add(cb.value);
+        else selectedHashes.delete(cb.value);
+      });
+      updateBulkToolbar();
+    }
+
+    function toggleSelectRow(checkbox) {
+      if (checkbox.checked) selectedHashes.add(checkbox.value);
+      else selectedHashes.delete(checkbox.value);
+      
+      const allCheckboxes = document.querySelectorAll('.row-checkbox');
+      const masterCheckbox = document.getElementById('selectAllCheckbox');
+      if (masterCheckbox) {
+        masterCheckbox.checked = Array.from(allCheckboxes).every(cb => cb.checked) && allCheckboxes.length > 0;
+      }
+      updateBulkToolbar();
+    }
+
+    function updateBulkToolbar() {
+      const toolbar = document.getElementById('bulk-toolbar');
+      const countEl = document.getElementById('sel-count');
+      const actionsEl = document.getElementById('bulk-actions');
+      
+      countEl.innerText = selectedHashes.size;
+      
+      if (selectedHashes.size > 0) {
+        toolbar.classList.add('visible');
+        
+        if (currentFilter === 'all' || currentFilter === 'disqualified') {
+          actionsEl.innerHTML = `
+            <button class="btn primary sm" onclick="executeBulkApprove2()"><i class="fa-solid fa-user-check"></i> Approve ${selectedHashes.size} for R2</button>
+          `;
+        } else if (currentFilter === 'r2_selected') {
+          actionsEl.innerHTML = `
+            <button class="btn warning sm" onclick="executeBulkApprove3()"><i class="fa-solid fa-user-check"></i> Approve ${selectedHashes.size} for R3</button>
+          `;
+        } else {
+           actionsEl.innerHTML = `<span style="color: var(--text-sub); font-size: 0.85rem;">Assign Winners individually</span>`;
+        }
+      } else {
+        toolbar.classList.remove('visible');
+      }
+    }
+
+    async function executeBulkApprove2() {
+      if (!confirm(`Are you sure you want to approve ${selectedHashes.size} teams for Round 2?`)) return;
+      try {
+        const res = await fetch('/api/approve-round2-bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamHashes: Array.from(selectedHashes) })
+        });
+        const data = await res.json();
+        if (data.success) {
+          selectedHashes.clear();
+          updateBulkToolbar();
+          if (document.getElementById('selectAllCheckbox')) document.getElementById('selectAllCheckbox').checked = false;
+          loadAdminDatabase();
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function executeBulkApprove3() {
+      if (!confirm(`Are you sure you want to approve ${selectedHashes.size} teams for Round 3?`)) return;
+      try {
+        const res = await fetch('/api/approve-round3-bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamHashes: Array.from(selectedHashes) })
+        });
+        const data = await res.json();
+        if (data.success) {
+          selectedHashes.clear();
+          updateBulkToolbar();
+          if (document.getElementById('selectAllCheckbox')) document.getElementById('selectAllCheckbox').checked = false;
+          loadAdminDatabase();
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        alert(err.message);
+      }
     }
   </script>
 </body>

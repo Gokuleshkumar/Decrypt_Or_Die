@@ -2145,6 +2145,8 @@ function escapeHtml(str) {
 
 // --- ADMIN PORTAL FUNCTIONS ---
 let adminDatabaseRecords = [];
+let currentAdminFilter = 'all';
+let selectedAdmHashes = new Set();
 
 window.handleAdminLoginSubmit = function(event) {
   if (event) event.preventDefault();
@@ -2241,6 +2243,26 @@ window.approveParticipantRound3 = async function(teamHash) {
   }
 };
 
+window.declareWinner = async function(teamHash, rank) {
+  if (!confirm(`Are you sure you want to declare this team as ${rank}${rank === '1' ? 'st' : rank === '2' ? 'nd' : 'rd'} Place Winner?`)) return;
+  try {
+    const serverUrl = window.location.origin.startsWith('http') ? '/api/admin/declare-winner' : 'http://localhost:8080/api/admin/declare-winner';
+    const res = await fetch(serverUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamHash, rank })
+    });
+    const data = await res.json();
+    if (data.success) {
+      loadAdminDatabase();
+    } else {
+      alert(`Error: ${data.message}`);
+    }
+  } catch (err) {
+    alert(`Failed to declare winner: ${err.message}`);
+  }
+};
+
 window.deleteTeamAdmin = async function(id, teamName) {
   if(!confirm(`Are you SURE you want to delete team "${teamName}"? This action cannot be undone.`)) return;
   try {
@@ -2294,15 +2316,42 @@ function renderAdminModalTable(records) {
     return;
   }
 
-  // Sort records in descending order of Round 1 Score
+  const currentFilter = currentAdminFilter;
+
+  // Sort records dynamically based on active filter
   records.sort((a, b) => {
-    const r1A = a.round1Score || 0;
-    const r1B = b.round1Score || 0;
-    if (r1B !== r1A) return r1B - r1A;
+    let scoreA = a.round1Score || 0;
+    let scoreB = b.round1Score || 0;
+    if (currentFilter === 'r2_selected') {
+      scoreA = a.round2Score || 0;
+      scoreB = b.round2Score || 0;
+    } else if (currentFilter === 'r3_selected') {
+      scoreA = a.round3Score || 0;
+      scoreB = b.round3Score || 0;
+    }
+
+    if (scoreB !== scoreA) return scoreB - scoreA;
     return new Date(b.registeredAt || 0) - new Date(a.registeredAt || 0);
   });
 
-  const currentFilter = document.getElementById('adm-filter-select') ? document.getElementById('adm-filter-select').value : 'all';
+  const colCorrect = document.getElementById('adm-col-correct');
+  const colScore = document.getElementById('adm-col-score');
+  const colTime = document.getElementById('adm-col-time');
+  if (colScore && colTime && colCorrect) {
+    if (currentFilter === 'r2_selected') {
+      colCorrect.innerText = 'R2 Correct';
+      colScore.innerText = 'R2 Score';
+      colTime.innerText = 'R2 Time';
+    } else if (currentFilter === 'r3_selected') {
+      colCorrect.innerText = 'R3 Correct';
+      colScore.innerText = 'R3 Score';
+      colTime.innerText = 'R3 Time';
+    } else {
+      colCorrect.innerText = 'R1 Correct';
+      colScore.innerText = 'R1 Score';
+      colTime.innerText = 'R1 Time';
+    }
+  }
 
   records.forEach((rec, idx) => {
     if (rec.round3Approved) {
@@ -2323,11 +2372,28 @@ function renderAdminModalTable(records) {
     let actionBtn = '';
     let statusBadge = '';
 
-    if (rec.round3Approved) {
+    if (isDisqualifiedRec) {
+      tr.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
+      tr.style.borderLeft = '4px solid var(--accent-red)';
+      actionBtn = `<button class="pro-btn primary sm" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Clear Disqualification</button>`;
+      statusBadge = `<span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem;" title="${escapeHtml(rec.disqualificationReason || 'Incident Reported')}"><i class="fa-solid fa-triangle-exclamation"></i> Disqualified</span>`;
+    } else if (rec.round3Approved) {
       tr.style.backgroundColor = 'rgba(16, 185, 129, 0.08)';
       tr.style.borderLeft = '4px solid var(--accent-green)';
-      actionBtn = '<button class="pro-btn success sm" disabled style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border-color: var(--accent-green); cursor: default; font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</button>';
-      statusBadge = '<span style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem;"><i class="fa-solid fa-check-double"></i> R3 Selected</span>';
+      
+      if (currentFilter === 'r3_selected') {
+        actionBtn = `<select style="background: rgba(245, 158, 11, 0.1); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 0.4rem; border-radius: 4px; font-weight: bold; cursor: pointer; outline: none; margin-right: 0.5rem;" onchange="if(this.value) window.declareWinner('${escapeHtml(rec.teamHash)}', this.value)">
+          <option value="">Set Winner Rank...</option>
+          <option value="1" ${rec.winnerRank === 1 ? 'selected' : ''}>1st Place</option>
+          <option value="2" ${rec.winnerRank === 2 ? 'selected' : ''}>2nd Place</option>
+          <option value="3" ${rec.winnerRank === 3 ? 'selected' : ''}>3rd Place</option>
+        </select>`;
+      } else {
+         actionBtn = `<button class="pro-btn success sm" disabled style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border-color: var(--accent-green); cursor: default; font-weight: 700;"><i class="fa-solid fa-check-double"></i> R3 Selected</button>`;
+      }
+      
+      let rankLabel = rec.winnerRank ? ` &nbsp;<span style="color: var(--accent-gold);">🏆 ${rec.winnerRank}${rec.winnerRank === 1 ? 'st' : rec.winnerRank === 2 ? 'nd' : 'rd'}</span>` : '';
+      statusBadge = `<span style="background: rgba(16, 185, 129, 0.25); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem;"><i class="fa-solid fa-check-double"></i> R3 Selected${rankLabel}</span>`;
     } else if (rec.round2Approved) {
       tr.style.backgroundColor = 'rgba(59, 130, 246, 0.08)';
       tr.style.borderLeft = '4px solid var(--accent-blue)';
@@ -2337,11 +2403,6 @@ function renderAdminModalTable(records) {
         actionBtn = `<button class="pro-btn primary sm" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound3('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Select for R3</button>`;
       }
       statusBadge = '<span style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem;"><i class="fa-solid fa-check"></i> R2 Selected</span>';
-    } else if (isDisqualifiedRec) {
-      tr.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
-      tr.style.borderLeft = '4px solid var(--accent-red)';
-      actionBtn = `<button class="pro-btn primary sm" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Override & Select R2</button>`;
-      statusBadge = `<span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.78rem;" title="${escapeHtml(rec.disqualificationReason || 'Incident Reported')}"><i class="fa-solid fa-triangle-exclamation"></i> Disqualified</span>`;
     } else {
       tr.style.borderLeft = '4px solid transparent';
       actionBtn = `<button class="pro-btn primary sm" style="background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: 700;" onclick="approveParticipantRound2('${escapeHtml(rec.teamHash)}')"><i class="fa-solid fa-user-check"></i> Select for R2</button>`;
@@ -2360,11 +2421,23 @@ function renderAdminModalTable(records) {
       return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
     }
 
-    const r1Correct = rec.round1CorrectCount !== undefined ? `${rec.round1CorrectCount} / 25` : '-';
-    const r1Score = rec.round1Score !== undefined ? `${rec.round1Score} PTS` : '0 PTS';
-    const r1Time = formatSecs(rec.round1TimeTakenSeconds);
+    let r1Correct = rec.round1CorrectCount !== undefined ? `${rec.round1CorrectCount} / 25` : '-';
+    let r1Score = rec.round1Score !== undefined ? `${rec.round1Score} PTS` : '0 PTS';
+    let r1Time = formatSecs(rec.round1TimeTakenSeconds);
 
+    if (currentFilter === 'r2_selected') {
+      r1Correct = rec.round2CorrectCount !== undefined ? `${rec.round2CorrectCount} / 6` : '-';
+      r1Score = rec.round2Score !== undefined ? `${rec.round2Score} PTS` : '0 PTS';
+      r1Time = formatSecs(rec.round2TimeTakenSeconds);
+    } else if (currentFilter === 'r3_selected') {
+      r1Correct = rec.round3CorrectCount !== undefined ? `${rec.round3CorrectCount} / 16` : '-';
+      r1Score = rec.round3Score !== undefined ? `${rec.round3Score} PTS` : '0 PTS';
+      r1Time = formatSecs(rec.round3TimeTakenSeconds);
+    }
+
+    const isChecked = selectedAdmHashes.has(rec.teamHash);
     tr.innerHTML = `
+      <td style="padding: 0.65rem 0.9rem; width: 40px;"><input type="checkbox" class="checkbox-custom row-checkbox-adm" value="${escapeHtml(rec.teamHash)}" onchange="toggleSelectRowAdm(this)" ${isChecked ? 'checked' : ''} /></td>
       <td style="padding: 0.65rem 0.9rem;">${idx + 1}</td>
       <td style="padding: 0.65rem 0.9rem;">
         <strong style="color: #fff;">${escapeHtml(rec.teamName)}</strong>
@@ -2392,7 +2465,7 @@ function renderAdminModalTable(records) {
 
 function filterAdminTable() {
   const query = (document.getElementById('adm-search-input')?.value || '').toLowerCase().trim();
-  const filterStatus = (document.getElementById('adm-filter-select')?.value || 'all');
+  const filterStatus = currentAdminFilter;
   
   const filtered = adminDatabaseRecords.filter(r => {
     // 1. Text Search Match
@@ -2405,12 +2478,20 @@ function filterAdminTable() {
 
     // 2. Status Match
     let matchesStatus = true;
-    if (filterStatus === 'r2_selected') {
-      matchesStatus = !!r.round2Approved;
-    } else if (filterStatus === 'r3_selected') {
-      matchesStatus = !!r.round3Approved;
-    } else if (filterStatus === 'disqualified') {
-      matchesStatus = !!r.disqualified || (r.tabSwitchCount >= 2);
+    const isDq = !!r.disqualified || (r.tabSwitchCount >= 2);
+
+    if (filterStatus === 'disqualified') {
+      matchesStatus = isDq;
+    } else {
+      if (isDq) {
+        matchesStatus = false;
+      } else if (filterStatus === 'r2_selected') {
+        matchesStatus = !!r.round2Approved;
+      } else if (filterStatus === 'r3_selected') {
+        matchesStatus = !!r.round3Approved;
+      } else if (filterStatus === 'winners') {
+        matchesStatus = !!r.winnerRank && r.winnerRank > 0;
+      }
     }
 
     return matchesSearch && matchesStatus;
@@ -2542,4 +2623,113 @@ window.handleAddNewQuestionSubmit = async function(event) {
   }
 
   return false;
+};
+
+// --- NEW MODAL ADMIN TABS & BULK ACTION LOGIC ---
+window.setAdminFilter = function(filterVal) {
+  currentAdminFilter = filterVal;
+  
+  const btns = document.querySelectorAll('#admin-tabs .tab-btn');
+  btns.forEach(btn => btn.classList.remove('active'));
+  const exact = Array.from(btns).find(b => b.getAttribute('onclick').includes(filterVal));
+  if(exact) exact.classList.add('active');
+  
+  filterAdminTable();
+  window.updateAdmBulkToolbar();
+};
+
+window.toggleSelectAllAdm = function(masterCheckbox) {
+  const checkboxes = document.querySelectorAll('.row-checkbox-adm');
+  checkboxes.forEach(cb => {
+    cb.checked = masterCheckbox.checked;
+    if (masterCheckbox.checked) selectedAdmHashes.add(cb.value);
+    else selectedAdmHashes.delete(cb.value);
+  });
+  window.updateAdmBulkToolbar();
+};
+
+window.toggleSelectRowAdm = function(checkbox) {
+  if (checkbox.checked) selectedAdmHashes.add(checkbox.value);
+  else selectedAdmHashes.delete(checkbox.value);
+  
+  const allCheckboxes = document.querySelectorAll('.row-checkbox-adm');
+  const masterCheckbox = document.getElementById('selectAllCheckboxAdm');
+  if (masterCheckbox) {
+    masterCheckbox.checked = Array.from(allCheckboxes).every(cb => cb.checked) && allCheckboxes.length > 0;
+  }
+  window.updateAdmBulkToolbar();
+};
+
+window.updateAdmBulkToolbar = function() {
+  const toolbar = document.getElementById('adm-bulk-toolbar');
+  const countEl = document.getElementById('adm-sel-count');
+  const actionsEl = document.getElementById('adm-bulk-actions');
+  
+  if (!toolbar || !countEl || !actionsEl) return;
+  
+  countEl.innerText = selectedAdmHashes.size;
+  
+  if (selectedAdmHashes.size > 0) {
+    toolbar.classList.add('visible');
+    
+    if (currentAdminFilter === 'all' || currentAdminFilter === 'disqualified') {
+      actionsEl.innerHTML = `
+        <button class="pro-btn primary sm" onclick="executeBulkApprove2Adm()"><i class="fa-solid fa-user-check"></i> Approve ${selectedAdmHashes.size} for R2</button>
+      `;
+    } else if (currentAdminFilter === 'r2_selected') {
+      actionsEl.innerHTML = `
+        <button class="pro-btn warning sm" onclick="executeBulkApprove3Adm()"><i class="fa-solid fa-user-check"></i> Approve ${selectedAdmHashes.size} for R3</button>
+      `;
+    } else {
+       actionsEl.innerHTML = `<span style="color: var(--text-sub); font-size: 0.85rem;">Assign Winners individually</span>`;
+    }
+  } else {
+    toolbar.classList.remove('visible');
+  }
+};
+
+window.executeBulkApprove2Adm = async function() {
+  if (!confirm(`Are you sure you want to approve ${selectedAdmHashes.size} teams for Round 2?`)) return;
+  try {
+    const serverUrl = window.location.origin.startsWith('http') ? '/api/approve-round2-bulk' : 'http://localhost:8080/api/approve-round2-bulk';
+    const res = await fetch(serverUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamHashes: Array.from(selectedAdmHashes) })
+    });
+    const data = await res.json();
+    if (data.success) {
+      selectedAdmHashes.clear();
+      window.updateAdmBulkToolbar();
+      if (document.getElementById('selectAllCheckboxAdm')) document.getElementById('selectAllCheckboxAdm').checked = false;
+      loadAdminDatabase();
+    } else {
+      alert(data.message);
+    }
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+window.executeBulkApprove3Adm = async function() {
+  if (!confirm(`Are you sure you want to approve ${selectedAdmHashes.size} teams for Round 3?`)) return;
+  try {
+    const serverUrl = window.location.origin.startsWith('http') ? '/api/approve-round3-bulk' : 'http://localhost:8080/api/approve-round3-bulk';
+    const res = await fetch(serverUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamHashes: Array.from(selectedAdmHashes) })
+    });
+    const data = await res.json();
+    if (data.success) {
+      selectedAdmHashes.clear();
+      window.updateAdmBulkToolbar();
+      if (document.getElementById('selectAllCheckboxAdm')) document.getElementById('selectAllCheckboxAdm').checked = false;
+      loadAdminDatabase();
+    } else {
+      alert(data.message);
+    }
+  } catch (err) {
+    alert(err.message);
+  }
 };
