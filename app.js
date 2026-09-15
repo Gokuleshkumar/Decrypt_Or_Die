@@ -154,7 +154,7 @@ const state = {
   currentRound: 1,
   unlockedRound: 1,
   score: 0,
-  timeRemainingSeconds: 2100, // 35 minutes
+  timeRemainingSeconds: 1800, // 30 minutes
   timerStarted: false,
   soundEnabled: true,
   timerInterval: null,
@@ -168,9 +168,9 @@ const state = {
 
   // Round 2 Decryption Puzzles State
   r2CurrentIndex: 0,
-  r2UserAnswers: new Array(6).fill(''),
-  r2SolvedStatus: new Array(6).fill(false),
-  r2TimeRemainingSeconds: 1500, // 25 minutes
+  r2UserAnswers: new Array(10).fill(''),
+  r2SolvedStatus: new Array(10).fill(false),
+  r2TimeRemainingSeconds: 1800, // 30 minutes
   r2TimerStarted: false,
   r2TimerInterval: null,
   r2Completed: false,
@@ -178,14 +178,85 @@ const state = {
   r2TimeTakenSeconds: 0,
 
   // Round 3 State
-  r3CurrentMatrix: [],
-  r3TargetMatrix: [
-    1, 0, 0, 1,
-    0, 1, 1, 0,
-    0, 1, 1, 0,
-    1, 0, 0, 1
+  r3CurrentIndex: 0,
+  r3UserAnswers: new Array(8).fill(''),
+  r3SolvedStatus: new Array(8).fill(false),
+  r3TimerStarted: false,
+  r3TimeRemainingSeconds: 2700, // 45 minutes
+  r3TimerInterval: null,
+  r3ClueDeductions: 0,
+  r3Tasks: [
+    { 
+      title: "Task 1 (Points : 25)", 
+      prompt: "Whchgoh Thssp\nCan you break the shift and uncover the hidden message?\n🔑 Key = 7", 
+      answer: "Pavazha Malli",
+      clues: [
+        "↩️ Shift every letter backwards by 7 to reveal the hidden message.",
+        "🎧 The hidden message is the name of a popular song by Sai Abhyankkar."
+      ],
+      points: 25
+    },
+    { 
+      title: "Task 2 (Points : 25) - THE LANGUAGE OF MACHINES", 
+      prompt: "“Can you speak the language of machines?”\nYou intercepted this sequence:\n110001 111000 101111 110000 111001 101111 110010 110000 110010 110110\nSomething is hidden inside the numbers.\n🔑 KEY=18/09/2026", 
+      answer: "18/09/2026",
+      clues: [
+        "It is not a character... it is a number.",
+        "Every group contains exactly 6 bits. Convert each group into a decimal number, then find out what those numbers represent."
+      ],
+      points: 25
+    },
+    { 
+      title: "Task 3 (Points : 25) - Think outside of the box", 
+      prompt: "“ Look around you what u see most familiar is the Key ”\n“Mugiwara (麦わら)”", 
+      answer: "One Piece",
+      clues: [
+        "its an most popular anime",
+        "consist of more than 1000+ Episodes in it"
+      ],
+      points: 25
+    },
+    { 
+      title: "Task 4 (Points : 50)", 
+      prompt: "The message has been disguised, not encrypted. Can you reveal what lies beneath?\n“VGltZSBSYW4gT3V0”", 
+      answer: "Time Ran Out",
+      clues: [
+        "“Machines may see symbols, but humans see meaning.”",
+        "“64 is more than just a number…”"
+      ],
+      points: 50
+    },
+    { 
+      title: "Task 5 (Points : 50)", 
+      prompt: "<h3>Scan this Qr Using Google lens using laptop.(Dont use mobile phones)</h3>\n<p>Find the Flag inside the Website.</p>\n<img src=\"task5-qr.png\" alt=\"QR Code\" style=\"max-width: 250px; margin-top: 15px; border-radius: 8px; border: 1px solid var(--accent-green);\" />", 
+      answer: "FLAG={TH1NK_L1KE_A_H4CKER}", 
+      points: 50 
+    },
+    { 
+      title: "Task 6 (Points : 250)", 
+      prompt: "<h3>File Search</h3>\n<p>Download the Folder and Find the Hidden file.</p>\n<p><a href=\"https://drive.google.com/file/d/1tkdRcP_EPVacVf37iMP2dcYGXBoWGnB0/view?usp=sharing\" target=\"_blank\" class=\"pro-btn sm\" style=\"margin-top: 10px; margin-bottom: 10px;\"><i class=\"fa-solid fa-download\"></i> Download Folder</a></p>", 
+      answer: "FLAG={HIDDEN_FILES_REVEAL_SECRETS}", 
+      points: 250,
+      clues: ["Look for files named Treasure.txt or check hidden folders"]
+    },
+    { 
+      title: "Task 7 (Points : 150)", 
+      prompt: "<h3>Find the Password & ID</h3>\n<div style=\"background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);\">\n  <input type=\"text\" id=\"t7-id\" placeholder=\"ID\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <input type=\"password\" id=\"t7-pass\" placeholder=\"Password\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <button type=\"button\" class=\"pro-btn sm\" style=\"width: 100%;\" onclick=\"if(document.getElementById('t7-id').value === 'clusiter_2k26' && document.getElementById('t7-pass').value === '2026') { document.getElementById('t7-msg').innerText = 'FLAG={AUTH_BYPASS_SUCCESS}'; document.getElementById('t7-msg').style.color = 'var(--accent-green)'; } else { document.getElementById('t7-msg').innerText = 'Access Denied: Invalid ID or Password'; document.getElementById('t7-msg').style.color = 'var(--accent-red)'; }\">Login</button>\n  <p id=\"t7-msg\" style=\"margin-top: 10px; font-weight: bold; text-align: center;\"></p>\n</div>", 
+      answer: "FLAG={AUTH_BYPASS_SUCCESS}", 
+      points: 150,
+      clues: ["Can you view the source code to see how the login is verified?"]
+    },
+    { 
+      title: "TASK 8 (Points : 250)", 
+      prompt: "<h3>Reverse Engineering</h3>\n<p>Decode the given file and find the flag.</p>\n<p><a href=\"https://drive.google.com/file/d/1cUEWmA-58MapwgAX5aFAyeCPJ4G-P3SA/view?usp=drive_link\" target=\"_blank\" class=\"pro-btn sm\" style=\"margin-top: 10px; margin-bottom: 10px;\"><i class=\"fa-solid fa-download\"></i> Download task.exe</a></p>\n<p style=\"font-size: 0.9em; color: var(--accent-green);\">No Negative Marking for clues.</p>", 
+      answer: "FLAG_PLACEHOLDER", 
+      points: 250,
+      clues: ["Reverse Engineering"]
+    }
   ],
-  r3Completed: false
+  r3Completed: false,
+  r3Score: 0,
+  r3TimeTakenSeconds: 0
 };
 
 // --- WEB AUDIO SYNTHESIZER ---
@@ -345,7 +416,7 @@ function restoreStateFromStorage() {
       state.currentRound = data.currentRound || 1;
       state.unlockedRound = data.unlockedRound || 1;
       state.score = data.score || 0;
-      state.timeRemainingSeconds = data.timeRemainingSeconds !== undefined ? data.timeRemainingSeconds : 2100;
+      state.timeRemainingSeconds = data.timeRemainingSeconds !== undefined ? data.timeRemainingSeconds : 1800;
       state.timerStarted = data.timerStarted || false;
       state.r1Completed = data.r1Completed || false;
       state.r1CurrentQIndex = data.r1CurrentQIndex || 0;
@@ -356,9 +427,9 @@ function restoreStateFromStorage() {
       state.r1QuizActive = data.r1QuizActive || false;
       state.tabSwitchCount = data.tabSwitchCount || 0;
       state.r2CurrentIndex = data.r2CurrentIndex || 0;
-      state.r2UserAnswers = data.r2UserAnswers || new Array(6).fill('');
-      state.r2SolvedStatus = data.r2SolvedStatus || new Array(6).fill(false);
-      state.r2TimeRemainingSeconds = data.r2TimeRemainingSeconds !== undefined ? data.r2TimeRemainingSeconds : 1500;
+      state.r2UserAnswers = data.r2UserAnswers || new Array(10).fill('');
+      state.r2SolvedStatus = data.r2SolvedStatus || new Array(10).fill(false);
+      state.r2TimeRemainingSeconds = data.r2TimeRemainingSeconds !== undefined ? data.r2TimeRemainingSeconds : 1800;
       state.r2TimerStarted = data.r2TimerStarted || false;
       state.r2Completed = data.r2Completed || false;
       state.r2Score = data.r2Score || 0;
@@ -543,7 +614,6 @@ restoreStateFromStorage();
 
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
-  initRound3Grid();
   loadExternalQuestions();
 
   const regForm = document.getElementById('registration-form');
@@ -1062,6 +1132,12 @@ function startAdminApprovalPolling() {
         state.disqualificationReason = '';
         state.r2Completed = true;
         
+        const r2Status = document.getElementById('r2-waiting-status-text');
+        if (r2Status) {
+          r2Status.innerHTML = '<i class="fa-solid fa-circle-check"></i> Selected for Round-3';
+          r2Status.style.color = 'var(--accent-green)';
+        }
+
         const waitingView = document.getElementById('view-waiting');
         if (waitingView) { waitingView.classList.remove('active'); waitingView.style.display = 'none'; }
         const dqView = document.getElementById('view-disqualified');
@@ -1073,21 +1149,29 @@ function startAdminApprovalPolling() {
         unlockRound(3);
         switchRoundTab(3);
         persistStateToStorage();
-        alert(`CONGRATULATIONS!\n\nYour team "${state.teamName}" has been SELECTED & APPROVED by the Admin for Round 3!\n\nNeural Core Matrix is now UNLOCKED.`);
+        alert(`CONGRATULATIONS!\n\nYour team "${state.teamName}" has been SELECTED & APPROVED by the Admin for Round 3!\n\nCapture The Flag Matrix is now UNLOCKED.`);
         return;
       }
 
       if (data.success && data.round2Approved && state.unlockedRound < 2) {
         const r1Status = document.getElementById('r1-waiting-status-text');
+        const r1Desc = document.getElementById('r1-waiting-desc');
         if (r1Status) {
           r1Status.innerHTML = '<i class="fa-solid fa-circle-check"></i> Selected for Round-2';
           r1Status.style.color = 'var(--accent-green)';
         }
+        if (r1Desc) {
+          r1Desc.innerHTML = 'Congratulations! Your team has been verified and approved by the Admin. <strong>Round 2: Mainframe CLI Breach</strong> is now unlocked!';
+        }
 
         const globalStatus = document.getElementById('global-waiting-status-text');
+        const globalDesc = document.getElementById('global-waiting-desc');
         if (globalStatus) {
           globalStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> Selected for Round-2';
           globalStatus.style.color = 'var(--accent-green)';
+        }
+        if (globalDesc) {
+          globalDesc.innerHTML = 'Congratulations! Your team has been verified and approved by the Admin. <strong>Round 2: Mainframe CLI Breach</strong> is now unlocked!';
         }
 
         setTimeout(() => {
@@ -1155,7 +1239,7 @@ async function submitR1Quiz(isDisqualified = false, disqualificationReason = '')
     // Round 2 remains locked until Admin selects/approves participant in Admin Portal
   }
 
-  state.r1TimeTakenSeconds = Math.max(0, 2100 - state.timeRemainingSeconds);
+  state.r1TimeTakenSeconds = Math.max(0, 1800 - state.timeRemainingSeconds);
 
   const serverUrl = window.location.origin.startsWith('http') 
     ? '/api/submit-round1' 
@@ -1243,45 +1327,73 @@ function startTimer() {
 const r2Puzzles = [
   {
     id: 1,
-    title: "1. The Mirror Alphabet",
+    title: "1. THE SWITCHBOARD",
+    cipherText: "Four switches control four systems:\nA → Database\nB → Firewall\nC → Backup\nD → Authentication\nExactly two switches are ON.\nThe monitoring system reports:\n• If A is ON, C must be OFF.\n• If B is ON, D must be ON.\n• C and D cannot both be ON.\n• At least one of A or B is ON.\n• If D is OFF, A must be ON.\nHowever, one monitoring statement is known to be false.\nThe actual switch state is:\nA = ON\nB = OFF\nC = ON\nD = OFF\nQuestion: Which monitoring statement is false?\nA) If A is ON, C must be OFF.\nB) If B is ON, D must be ON.\nC) C and D cannot both be ON.\nD) At least one of A or B is ON.\nE) If D is OFF, A must be ON.",
+    hint: "Read the actual states and evaluate each statement.",
+    answer: "A"
+  },
+  {
+    id: 2,
+    title: "2. THE DOUBLE-LAYER LOGIC",
+    cipherText: "Four files have four different sizes:\n12 KB\n18 KB\n24 KB\n30 KB\nFiles are:\nA, B, C, D\nClues:\n• A is larger than C.\n• B is not 12 KB.\n• D is exactly 6 KB larger than B.\n• C is not 18 KB.\n• A is not 30 KB.\nQuestion: Which file is 24 KB?\nA) A\nB) B\nC) C\nD) D",
+    hint: "Match each file to a size using the given clues step by step.",
+    answer: "A"
+  },
+  {
+    id: 3,
+    title: "3. The Mirror Alphabet",
     cipherText: "GSRH RH Z HVXIVG",
     hint: "\"What is written becomes clear when the alphabet looks into a mirror.\"",
     answer: "THIS IS A SECRET"
   },
   {
-    id: 2,
-    title: "2. Two Layers Deep",
-    cipherText: "WKLV LV QRW WKH UHDO PHVVDJH",
-    hint: "The first layer uses a Caesar cipher.\nThe key is 3.\nAfter decrypting, look carefully at the resulting sentence.\nThe phrase itself tells you whether there is another layer.",
-    answer: "THIS IS NOT THE REAL MESSAGE"
-  },
-  {
-    id: 3,
-    title: "3. Numbers in Disguise",
-    cipherText: "20-8-5 / 11-5-25 / 9-19 / 3-15-4-5 / 6-9-18-5",
-    hint: "A = 1, B = 2, C = 3...",
-    answer: "THE KEY IS CODE FIRE"
-  },
-  {
     id: 4,
-    title: "4. The Database Administrator's Find",
-    cipherText: "53 45 4C 45 43 54\n20\n2A\n20\n46 52 4F 4D\n20\n55 53 45 52 53",
-    hint: "The values are hexadecimal.\nConvert them into ASCII.\nThe result is an SQL statement.",
-    answer: "SELECT * FROM USERS"
+    title: "4. Binary Bits",
+    cipherText: "01000011 01011001 01000010 01000101 01010010",
+    hint: "Every 8 bits represents one ASCII character.",
+    answer: "CYBER"
   },
   {
     id: 5,
-    title: "5. The Network Engineer's Message",
+    title: "5. The Detective's Wall",
+    cipherText: "A detective finds five words written on a wall:\nShift — Alphabet — Key — Rotation — Ciphertext\nHe must identify what the five clues describe.",
+    hint: "Concept: Pinpoint-style identification",
+    answer: "CAESAR CIPHER"
+  },
+  {
+    id: 6,
+    title: "6. The Online Shopping Secret",
+    cipherText: "You buy something online.\nYou notice the website address begins with:\nhttps://\nYour browser shows a 🔒 symbol.\nThe information travelling between you and the website is protected so outsiders cannot easily read it.\nWhat cryptographic technology is helping protect the connection?",
+    hint: "Real-world connection: HTTPS uses this.",
+    answer: "TLS ENCRYPTION"
+  },
+  {
+    id: 7,
+    title: "7. The Network Engineer's Message",
     cipherText: "48:45:4C:50\n4D:45\n43:52:41:43:4B",
     hint: "Each pair is hexadecimal ASCII.",
     answer: "HELP ME CRACK"
   },
   {
-    id: 6,
-    title: "6. Binary Bits",
-    cipherText: "01000011 01011001 01000010 01000101 01010010",
-    hint: "Every 8 bits represents one ASCII character.",
-    answer: "CYBER"
+    id: 8,
+    title: "8. The Four Suspects — Logic",
+    cipherText: "Four people are suspected:\nA, B, C and D\nOnly one is the hacker.\nClues:\nA says: “B did it.”\nB says: “D did it.”\nC says: “I didn't do it.”\nD says: “B is lying.”\nExactly one statement is true.\nQuestion: Who is the hacker?",
+    hint: "Concept: Logical deduction",
+    answer: "C"
+  },
+  {
+    id: 9,
+    title: "9. WHO CHANGED THE FILE?",
+    cipherText: "Four employees accessed a server:\nARUN\nBALA\nCHARAN\nDIVYA\nExactly one person modified a file.\nStatements:\nARUN: “BALA modified it.”\nBALA: “DIVYA modified it.”\nCHARAN: “I didn't modify it.”\nDIVYA: “BALA is lying.”\nExactly two statements are true.\nQuestion: Who modified the file?",
+    hint: "Concept: Logical deduction",
+    answer: "BALA"
+  },
+  {
+    id: 10,
+    title: "10. Find the hidden technical concept",
+    cipherText: "I have no battery,\nyet I can remember.\n\nI have no processor,\nyet I can affect what the processor does.\n\nI am fast when you return to what you used before.\n\nBut when what you need is not where you expected,\nI make you look somewhere else.\n\nIf you keep missing me,\nthe system becomes noticeably slower.\n\nWhat am I?\nA) RAM\nB) Cache\nC) Virtual Memory\nD) CPU Register",
+    hint: "Think about what components speed up access and cause slowdowns when missed.",
+    answer: "CACHE"
   }
 ];
 
@@ -1357,7 +1469,7 @@ function renderR2Puzzle(index) {
   const hintTextElem = document.getElementById('pz-hint-text');
   const inputElem = document.getElementById('pz-answer-input');
 
-  if (tagElem) tagElem.innerText = `Puzzle ${index + 1} of 6`;
+  if (tagElem) tagElem.innerText = `Puzzle ${index + 1} of 10`;
   if (titleElem) titleElem.innerText = pz.title;
   if (cipherTextElem) cipherTextElem.innerText = pz.cipherText;
   if (hintTextElem) hintTextElem.innerText = pz.hint || '';
@@ -1383,7 +1495,7 @@ function renderR2Puzzle(index) {
     }
   }
 
-  if (index === 5) {
+  if (index === 9) {
     if (nextBtn) nextBtn.style.display = 'none';
     if (submitBtn) {
       submitBtn.style.display = 'inline-flex';
@@ -1422,7 +1534,7 @@ function navigateR2Puzzle(direction) {
   if (state.disqualified) return;
   sound.playClick();
   const nextIdx = state.r2CurrentIndex + direction;
-  if (nextIdx >= 0 && nextIdx < 6) {
+  if (nextIdx >= 0 && nextIdx < 10) {
     renderR2Puzzle(nextIdx);
   }
 }
@@ -1432,7 +1544,7 @@ function buildR2PaletteGrid() {
   if (!gridElem) return;
 
   gridElem.innerHTML = '';
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 10; i++) {
     const btn = document.createElement('button');
     btn.className = 'palette-item';
     btn.id = `pz-palette-btn-${i}`;
@@ -1447,7 +1559,7 @@ function buildR2PaletteGrid() {
 }
 
 function updateR2PaletteGrid() {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 10; i++) {
     const btn = document.getElementById(`pz-palette-btn-${i}`);
     if (!btn) continue;
 
@@ -1481,11 +1593,12 @@ async function submitR2Puzzles(isDisqualified = false, disqualificationReason = 
   });
 
   const baseScore = solvedCount * 50;
-  const timeTakenSeconds = 1500 - state.r2TimeRemainingSeconds;
+  const timeTakenSeconds = 1800 - state.r2TimeRemainingSeconds;
   state.r2TimeTakenSeconds = Math.max(0, timeTakenSeconds);
 
-  // Less time taken = higher bonus score
-  const speedBonus = Math.max(0, Math.floor((1500 - state.r2TimeTakenSeconds) / 10));
+  // Less time taken = higher bonus score (scales with how many they got correct)
+  const maxSpeedBonus = Math.max(0, Math.floor((1800 - state.r2TimeTakenSeconds) / 10));
+  const speedBonus = Math.floor(maxSpeedBonus * (solvedCount / 10));
   state.r2Score = baseScore + speedBonus;
   state.score += state.r2Score;
 
@@ -1598,7 +1711,8 @@ function setupEventListeners() {
   ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
     document.addEventListener(evt, () => {
       const isFull = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
-      const isTestActive = (state.r1QuizActive && !state.r1Completed) || (state.r2TimerStarted && !state.r2Completed);
+      const isR3Active = (document.getElementById('r3-puzzle-view') && document.getElementById('r3-puzzle-view').style.display === 'block' && state.r3CurrentIndex >= 0 && state.r3CurrentIndex <= 3 && !state.r3Completed);
+      const isTestActive = (state.r1QuizActive && !state.r1Completed) || (state.r2TimerStarted && !state.r2Completed) || isR3Active;
       if (!isFull && isTestActive) {
         triggerTabViolation('Exited Fullscreen mode');
       }
@@ -1613,7 +1727,8 @@ function setupEventListeners() {
 
   document.addEventListener('visibilitychange', () => {
     if (isReloading) return;
-    const isTestActive = (state.r1QuizActive && !state.r1Completed) || (state.r2TimerStarted && !state.r2Completed);
+    const isR3Active = (document.getElementById('r3-puzzle-view') && document.getElementById('r3-puzzle-view').style.display === 'block' && state.r3CurrentIndex >= 0 && state.r3CurrentIndex <= 3 && !state.r3Completed);
+    const isTestActive = (state.r1QuizActive && !state.r1Completed) || (state.r2TimerStarted && !state.r2Completed) || isR3Active;
     if (document.hidden && isTestActive) {
       triggerTabViolation('Switched browser tab or minimized window');
     }
@@ -1621,7 +1736,8 @@ function setupEventListeners() {
 
   window.addEventListener('blur', () => {
     if (isReloading) return;
-    const isTestActive = (state.r1QuizActive && !state.r1Completed) || (state.r2TimerStarted && !state.r2Completed);
+    const isR3Active = (document.getElementById('r3-puzzle-view') && document.getElementById('r3-puzzle-view').style.display === 'block' && state.r3CurrentIndex >= 0 && state.r3CurrentIndex <= 3 && !state.r3Completed);
+    const isTestActive = (state.r1QuizActive && !state.r1Completed) || (state.r2TimerStarted && !state.r2Completed) || isR3Active;
     if (isTestActive) {
       triggerTabViolation('Lost window focus or switched application');
     }
@@ -1751,12 +1867,7 @@ function setupEventListeners() {
   const cliSendBtn = document.getElementById('cli-send-btn');
   if (cliSendBtn) cliSendBtn.addEventListener('click', handleCliCommand);
 
-  // Round 3
-  const resetBtn = document.getElementById('btn-reset-nodes');
-  if (resetBtn) resetBtn.addEventListener('click', initRound3Grid);
-
-  const r3SubBtn = document.getElementById('btn-r3-submit');
-  if (r3SubBtn) r3SubBtn.addEventListener('click', checkRound3Submit);
+  // Round 3 Event Listeners removed - using onclick in HTML
 }
 
 // --- TAB SWITCHING ---
@@ -1875,7 +1986,7 @@ STATUS = ACTIVE AUTHORIZATION`;
         state.score += 350;
         unlockRound(3);
         response = `[EXPLOIT SUCCESSFUL] Firewall bypassed! Authorization granted.
-Round 3 Neural Core Unlocked! (+350 PTS)`;
+Round 3 Capture The Flag Unlocked! (+350 PTS)`;
         rowClass = 'cli-row success';
 
         setTimeout(() => {
@@ -1914,151 +2025,219 @@ Round 3 Neural Core Unlocked! (+350 PTS)`;
   }
 }
 
-// --- NEURAL GRID ---
-function initRound3Grid() {
-  const gridContainer = document.getElementById('neural-matrix-grid');
-  if (!gridContainer) return;
-  gridContainer.innerHTML = '';
-
-  state.r3CurrentMatrix = [
-    1, 0, 1, 0,
-    0, 1, 0, 1,
-    1, 0, 1, 0,
-    0, 1, 0, 1
-  ];
-
-  for (let i = 0; i < 16; i++) {
-    const node = document.createElement('div');
-    node.className = 'node-tile';
-    node.dataset.index = i;
-    node.innerText = state.r3CurrentMatrix[i];
-
-    node.addEventListener('click', () => {
-      state.r3CurrentMatrix[i] = state.r3CurrentMatrix[i] === 1 ? 0 : 1;
-      node.innerText = state.r3CurrentMatrix[i];
-      node.classList.toggle('active', state.r3CurrentMatrix[i] === 1);
-      updateRound3Sync();
-    });
-
-    if (state.r3CurrentMatrix[i] === 1) node.classList.add('active');
-    gridContainer.appendChild(node);
+// --- ROUND 3 TASKS ---
+function startRound3Tasks() {
+  document.getElementById('r3-rules-view').style.display = 'none';
+  document.getElementById('r3-puzzle-view').style.display = 'block';
+  state.r3CurrentIndex = 0;
+  
+  if (!state.r3TimerStarted) {
+    state.r3TimerStarted = true;
+    startR3Timer();
   }
 
-  updateRound3Sync();
+  loadR3Task();
 }
 
-function updateRound3Sync() {
-  let matches = 0;
-  for (let i = 0; i < 16; i++) {
-    if (state.r3CurrentMatrix[i] === state.r3TargetMatrix[i]) {
-      matches++;
+function startR3Timer() {
+  if (state.r3TimerInterval) clearInterval(state.r3TimerInterval);
+
+  state.r3TimerInterval = setInterval(() => {
+    if (state.r3TimeRemainingSeconds <= 0) {
+      clearInterval(state.r3TimerInterval);
+      state.r3TimeRemainingSeconds = 0;
+      if (!state.r3Completed) {
+        alert('ROUND 3 TIME EXPIRED! Auto-submitting your answers now.');
+        submitR3Tasks();
+      }
+      return;
     }
+
+    state.r3TimeRemainingSeconds--;
+    persistStateToStorage();
+
+    if (state.currentRound === 3) {
+      const mins = Math.floor(state.r3TimeRemainingSeconds / 60);
+      const secs = state.r3TimeRemainingSeconds % 60;
+      document.querySelectorAll('.countdown-timer-display').forEach(el => el.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`);
+      
+      const timerColor = state.r3TimeRemainingSeconds <= 60 ? 'var(--accent-red)' : 'var(--accent-green)';
+      document.querySelectorAll('.timer-val').forEach(el => el.style.color = timerColor);
+    }
+  }, 1000);
+}
+
+function loadR3Task() {
+  const t = state.r3Tasks[state.r3CurrentIndex];
+  const titleElem = document.getElementById('r3-prompt-title');
+  const textElem = document.getElementById('r3-task-text');
+  const inputElem = document.getElementById('r3-answer-input');
+  const tagElem = document.getElementById('r3-task-counter-tag');
+
+  const cluesSection = document.getElementById('r3-clues-section');
+  const inputContainer = document.getElementById('r3-input-container');
+
+  if (tagElem) tagElem.innerText = `Task ${state.r3CurrentIndex + 1} of 8`;
+  if (titleElem) titleElem.innerText = t.title;
+  if (textElem) textElem.innerHTML = t.prompt;
+
+  // Handle Clues
+  if (t.clues && t.clues.length > 0) {
+    if (cluesSection) cluesSection.style.display = 'flex';
+    document.getElementById('r3-clue-1-text').style.display = 'none';
+    document.getElementById('r3-clue-2-text').style.display = 'none';
+    document.getElementById('r3-clue-1-text').innerText = t.clues[0];
+    if (t.clues[1]) document.getElementById('r3-clue-2-text').innerText = t.clues[1];
+    
+    const btn1 = document.getElementById('btn-reveal-clue-1');
+    const btn2 = document.getElementById('btn-reveal-clue-2');
+    
+    if (state.r3CurrentIndex === 7) {
+      if (btn1) btn1.innerHTML = '<i class="fa-solid fa-eye"></i> Reveal Clue (No Negative Marking)';
+    } else {
+      if (btn1) btn1.innerHTML = '<i class="fa-solid fa-eye"></i> Reveal Clue 1 (-5 points)';
+      if (btn2) btn2.innerHTML = '<i class="fa-solid fa-eye"></i> Reveal Clue 2 (-10 points)';
+    }
+    
+    if (btn1) btn1.style.display = 'inline-block';
+    if (btn2) btn2.style.display = t.clues.length > 1 ? 'inline-block' : 'none';
+  } else {
+    if (cluesSection) cluesSection.style.display = 'none';
   }
 
-  const syncPercent = Math.round((matches / 16) * 100);
-  const syncElem = document.getElementById('sync-percentage');
-  const labelElem = document.getElementById('sync-status-label');
-
-  if (syncElem) syncElem.innerText = `${syncPercent}%`;
-
-  if (syncElem && labelElem) {
-    if (syncPercent === 100) {
-      syncElem.style.color = '#10b981';
-      labelElem.innerText = 'Node Matrix 100% Aligned! Ready to Complete.';
-    } else if (syncPercent > 70) {
-      syncElem.style.color = '#3b82f6';
-      labelElem.innerText = 'Signal Stable. Align remaining tiles.';
-    } else {
-      syncElem.style.color = '#9ca3af';
-      labelElem.innerText = 'Signal Noise. Toggle tiles to align.';
-    }
+  if (inputContainer) inputContainer.style.display = 'block';
+  if (inputElem) {
+    inputElem.value = state.r3UserAnswers[state.r3CurrentIndex] || '';
+    inputElem.disabled = state.r3SolvedStatus[state.r3CurrentIndex];
   }
 
-  const nodes = document.querySelectorAll('.node-tile');
-  nodes.forEach((node, idx) => {
-    if (state.r3CurrentMatrix[idx] === state.r3TargetMatrix[idx]) {
-      node.classList.add('target-aligned');
-    } else {
-      node.classList.remove('target-aligned');
-    }
-  });
+  updateR3NavButtons();
+  renderR3Palette();
+}
 
+function revealR3Clue(num) {
+  document.getElementById(`btn-reveal-clue-${num}`).style.display = 'none';
+  document.getElementById(`r3-clue-${num}-text`).style.display = 'block';
+  
+  if (state.r3CurrentIndex !== 7) {
+    let deduction = num === 1 ? 5 : 10;
+    state.r3ClueDeductions = (state.r3ClueDeductions || 0) + deduction;
+    state.score = Math.max(0, state.score - deduction);
+  }
+  
+  updateMetricsDisplay();
   persistStateToStorage();
 }
 
-function checkRound3Submit() {
-  let matches = 0;
-  for (let i = 0; i < 16; i++) {
-    if (state.r3CurrentMatrix[i] === state.r3TargetMatrix[i]) {
-      matches++;
-    }
-  }
-
-  if (matches === 16) {
-    sound.playVictory();
-    state.r3Completed = true;
-    state.r3CorrectCount = 16;
-    state.r3Score = 350;
-    state.r3TimeTakenSeconds = Math.max(0, 2100 - state.timeRemainingSeconds);
-    state.score += 350;
-    updateMetricsDisplay();
-    clearInterval(state.timerInterval);
-
-    // Save Round 3 to backend MongoDB
-    const serverUrl = window.location.origin.startsWith('http')
-      ? '/api/submit-round3'
-      : 'http://localhost:8080/api/submit-round3';
-
-    try {
-      fetch(serverUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          participantName: state.participantName,
-          teamName: state.teamName,
-          teamHash: state.teamHash,
-          score: 350,
-          correctCount: 16,
-          timeTakenSeconds: state.r3TimeTakenSeconds
-        })
-      });
-    } catch (e) {
-      console.warn('[R3 SAVE NOTE]', e);
-    }
-
-    showFeedback('r3-feedback', 'CHALLENGE COMPLETED SUCCESSFULLY!', 'green');
-
-    setTimeout(() => {
-      const elapsedSecs = 2100 - state.timeRemainingSeconds;
-      const mins = Math.floor(elapsedSecs / 60);
-      const secs = elapsedSecs % 60;
-
-      const ft = document.getElementById('v-final-time');
-      if (ft) ft.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      openModal('modal-victory');
-    }, 1000);
-
-  } else {
-    sound.playError();
-    showFeedback('r3-feedback', `Alignment Error: Only ${Math.round((matches/16)*100)}% synced. Re-check node tiles.`, 'red');
+function navigateR3Task(dir) {
+  const newIndex = state.r3CurrentIndex + dir;
+  if (newIndex >= 0 && newIndex < 8) {
+    state.r3CurrentIndex = newIndex;
+    loadR3Task();
+    persistStateToStorage();
   }
 }
 
-function submitR3Matrix() {
-  let matches = 0;
-  for (let i = 0; i < 16; i++) {
-    if (state.r3CurrentMatrix[i] === state.r3TargetMatrix[i]) {
-      matches++;
-    }
-  }
+function handleR3InputAnswer(val) {
+  if (state.r3SolvedStatus[state.r3CurrentIndex]) return;
+  state.r3UserAnswers[state.r3CurrentIndex] = val;
 
+  const currentTask = state.r3Tasks[state.r3CurrentIndex];
+  if (val.trim().toUpperCase() === currentTask.answer.toUpperCase()) {
+    sound.playSuccess();
+    state.r3SolvedStatus[state.r3CurrentIndex] = true;
+    
+    const inputElem = document.getElementById('r3-answer-input');
+    if (inputElem) inputElem.disabled = true;
+    
+    // Auto advance
+    setTimeout(() => {
+      let nextUnsolved = -1;
+      for (let i = 0; i < 8; i++) {
+        if (!state.r3SolvedStatus[i]) {
+          nextUnsolved = i;
+          break;
+        }
+      }
+      if (nextUnsolved !== -1) {
+        state.r3CurrentIndex = nextUnsolved;
+        loadR3Task();
+      } else {
+        renderR3Palette();
+        updateR3NavButtons();
+      }
+    }, 800);
+  }
+  renderR3Palette();
+  updateR3NavButtons();
+  persistStateToStorage();
+}
+
+function updateR3NavButtons() {
+  const prevBtn = document.getElementById('btn-prev-r3');
+  const nextBtn = document.getElementById('btn-next-r3');
+  const subBtn = document.getElementById('btn-submit-r3-tasks');
+
+  if (prevBtn) prevBtn.disabled = (state.r3CurrentIndex === 0);
+  
+  if (state.r3CurrentIndex === 7) {
+    if (nextBtn) nextBtn.style.display = 'none';
+    if (subBtn) subBtn.style.display = 'inline-flex';
+  } else {
+    if (nextBtn) {
+      nextBtn.style.display = 'inline-flex';
+      nextBtn.disabled = false;
+    }
+    if (subBtn) subBtn.style.display = 'none';
+  }
+}
+
+function renderR3Palette() {
+  const pGrid = document.getElementById('r3-palette-grid');
+  if (!pGrid) return;
+  pGrid.innerHTML = '';
+
+  for (let i = 0; i < 8; i++) {
+    const pTile = document.createElement('div');
+    pTile.className = 'palette-item';
+    pTile.innerText = (i + 1);
+
+    if (state.r3SolvedStatus[i]) {
+      pTile.classList.add('answered');
+    }
+    if (i === state.r3CurrentIndex) {
+      pTile.classList.add('active');
+    }
+
+    pTile.addEventListener('click', () => {
+      state.r3CurrentIndex = i;
+      loadR3Task();
+      persistStateToStorage();
+    });
+
+    pGrid.appendChild(pTile);
+  }
+}
+
+function submitR3Tasks(isDisqualified = false, disqualificationReason = '') {
+  let matches = state.r3SolvedStatus.filter(Boolean).length;
   state.r3Completed = true;
   state.r3CorrectCount = matches;
-  state.r3Score = Math.round((matches / 16) * 350);
-  state.r3TimeTakenSeconds = Math.max(0, 2100 - state.timeRemainingSeconds);
-  state.score += state.r3Score;
+  
+  let totalEarned = 0;
+  for(let i=0; i<8; i++) {
+    if(state.r3SolvedStatus[i]) {
+      totalEarned += (state.r3Tasks[i].points || 25);
+    }
+  }
+  let calculatedScore = Math.max(0, totalEarned - (state.r3ClueDeductions || 0));
+  state.r3Score = isDisqualified ? 0 : calculatedScore;
+  state.r3TimeTakenSeconds = Math.max(0, 2700 - state.r3TimeRemainingSeconds);
+  
+  // Clue deductions are already subtracted from global state.score during the round
+  state.score = isDisqualified ? 0 : (state.score + totalEarned);
   updateMetricsDisplay();
-  if (state.timerInterval) clearInterval(state.timerInterval);
+  if (state.r3TimerInterval) clearInterval(state.r3TimerInterval);
 
   const serverUrl = window.location.origin.startsWith('http')
     ? '/api/submit-round3'
@@ -2074,14 +2253,32 @@ function submitR3Matrix() {
         teamHash: state.teamHash,
         score: state.r3Score,
         correctCount: matches,
-        timeTakenSeconds: state.r3TimeTakenSeconds
+        timeTakenSeconds: state.r3TimeTakenSeconds,
+        tabSwitchCount: state.tabSwitchCount,
+        disqualified: isDisqualified,
+        disqualificationReason: disqualificationReason || (isDisqualified ? 'Exceeded maximum 2 proctoring violations' : ''),
+        incidentReport: isDisqualified ? {
+          participantName: state.participantName,
+          teamName: state.teamName,
+          collegeName: state.collegeName,
+          mobileNumber: state.mobileNumber,
+          teamHash: state.teamHash,
+          violationCount: state.tabSwitchCount,
+          reason: disqualificationReason || 'Exceeded maximum 2 proctoring violations',
+          timestamp: new Date().toISOString()
+        } : null
       })
     });
   } catch (e) {
     console.warn('[R3 SAVE NOTE]', e);
   }
 
-  showFeedback('r3-feedback', 'TIME EXPIRED! Round 3 Submitted.', 'orange');
+  if (isDisqualified) {
+    persistStateToStorage();
+    return;
+  }
+
+  sound.playVictory();
 
   setTimeout(() => {
     const elapsedSecs = state.r3TimeTakenSeconds;

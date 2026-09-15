@@ -90,10 +90,16 @@ app.post('/api/login', async (req, res) => {
     let existingTeam = await Registration.findOne({ teamHash: teamHash });
 
     if (existingTeam) {
-      // Reject duplicate team IDs strictly
-      return res.status(401).json({
-        success: false,
-        message: 'Team id already exists.'
+      if (existingTeam.teamName !== teamName) {
+        return res.status(401).json({
+          success: false,
+          message: 'Team ID already taken by another team.'
+        });
+      }
+      return res.json({
+        success: true,
+        message: 'Login successful.',
+        team: existingTeam
       });
     }
 
@@ -152,7 +158,7 @@ app.delete('/api/team/:id', async (req, res) => {
     }
 
     const count = await Registration.countDocuments();
-    
+
     console.log(`\n===================================================`);
     console.log(` [MONGODB COMPASS TEAM DELETED SUCCESSFULLY!]      `);
     console.log(`  Document ID      : ${deletedDoc._id}`);
@@ -323,10 +329,10 @@ app.post('/api/submit-round2', async (req, res) => {
   }
 });
 
-// POST /api/submit-round3 -> Save Round 3 Neural Matrix Results
+// POST /api/submit-round3 -> Save Round 3 Tasks Results
 app.post('/api/submit-round3', async (req, res) => {
   console.log('\n[HTTP REQUEST RECEIVED] POST /api/submit-round3 Body:', req.body);
-  const { participantName, teamName, teamHash, score, correctCount, timeTakenSeconds } = req.body;
+  const { participantName, teamName, teamHash, score, correctCount, timeTakenSeconds, disqualified, disqualificationReason, tabSwitchCount } = req.body;
 
   try {
     if (!isMongoConnected) {
@@ -346,24 +352,43 @@ app.post('/api/submit-round3', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Participant record not found.' });
     }
 
-    record.round3Score = score || 350;
-    record.round3CorrectCount = correctCount || 16;
+    record.round3Score = score || 0;
+    record.round3CorrectCount = correctCount || 0;
     record.round3Completed = true;
     record.round3TimeTakenSeconds = timeTakenSeconds || 0;
     record.round3SubmittedAt = new Date();
+
+    if (tabSwitchCount !== undefined) record.tabSwitchCount = tabSwitchCount;
+    if (disqualified !== undefined) record.disqualified = disqualified;
+    if (disqualificationReason) record.disqualificationReason = disqualificationReason;
+    if (req.body.incidentReport) record.incidentReport = req.body.incidentReport;
     await record.save();
 
-    console.log(`\n===================================================`);
-    console.log(` [ROUND 3 NEURAL MATRIX COMPLETED & SAVED!]        `);
-    console.log(`  Participant Name : "${record.participantName}"`);
-    console.log(`  Team Name        : "${record.teamName}"`);
-    console.log(`  Round 3 Score    : ${record.round3Score} PTS (${record.round3CorrectCount}/16 Aligned)`);
-    console.log(`  Time Taken       : ${record.round3TimeTakenSeconds}s`);
-    console.log(`===================================================\n`);
+    if (disqualified) {
+      console.log(`\n===================================================`);
+      console.log(` 🚨 [PROCTORING INCIDENT REPORTED TO ADMIN - ROUND 3]`);
+      console.log(`  Participant Name : "${record.participantName}"`);
+      console.log(`  Team Name        : "${record.teamName}"`);
+      console.log(`  College Name     : "${record.collegeName}"`);
+      console.log(`  Mobile Number    : "${record.mobileNumber}"`);
+      console.log(`  Team Hash        : "${record.teamHash}"`);
+      console.log(`  Violations Count : ${record.tabSwitchCount} / 2`);
+      console.log(`  Incident Status  : DISQUALIFIED & AUTO-SUBMITTED`);
+      console.log(`  Reason           : "${record.disqualificationReason || 'Exceeded maximum 2 proctoring violations'}"`);
+      console.log(`===================================================\n`);
+    } else {
+      console.log(`\n===================================================`);
+      console.log(` [ROUND 3 TASKS COMPLETED & SAVED!]        `);
+      console.log(`  Participant Name : "${record.participantName}"`);
+      console.log(`  Team Name        : "${record.teamName}"`);
+      console.log(`  Round 3 Score    : ${record.round3Score} PTS (${record.round3CorrectCount}/8 Correct)`);
+      console.log(`  Time Taken       : ${record.round3TimeTakenSeconds}s`);
+      console.log(`===================================================\n`);
+    }
 
     return res.status(200).json({
       success: true,
-      message: 'Round 3 matrix results saved to MongoDB successfully.',
+      message: 'Round 3 task results saved to MongoDB successfully.',
       data: record
     });
   } catch (err) {
@@ -576,19 +601,19 @@ app.post('/api/admin/declare-winner', async (req, res) => {
   if (!teamHash || !rank) {
     return res.status(400).json({ success: false, message: 'teamHash and rank are required.' });
   }
-  
+
   try {
     const record = await Registration.findOne({ teamHash });
     if (!record) {
       return res.status(404).json({ success: false, message: 'Team not found.' });
     }
-    
+
     // Clear any existing team with this rank to prevent duplicates
     await Registration.updateMany({ winnerRank: rank }, { $set: { winnerRank: 0 } });
-    
+
     record.winnerRank = Number(rank);
     await record.save();
-    
+
     return res.json({ success: true, message: `Team set as rank ${rank} winner.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });

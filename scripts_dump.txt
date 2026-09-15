@@ -1,0 +1,734 @@
+<script src="https://cdn.tailwindcss.com"></script>
+---
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+---
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+---
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+---
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: '#030008',
+                        glass: 'rgba(255, 255, 255, 0.03)',
+                        primary: '#8b5cf6', // Violet
+                        accent: '#06b6d4',  // Cyan
+                        pink: '#ec4899'     // Pink
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #2a8af6 0deg, #a853ba 180deg, #e92a67 360deg)',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, filter: 'brightness(1)' },
+                            '50%': { opacity: .7, filter: 'brightness(1.5)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+---
+<script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('flex');
+            });
+            // Close when clicking a link
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                });
+            });
+        }
+
+        function openContactModal() {
+            document.getElementById('contactModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactStatus').classList.add('hidden');
+        }
+
+        function closeSuccessModal() {
+            const modalContent = document.getElementById('successModalContent');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('successModal').classList.add('hidden');
+            }, 300); // match transition duration
+        }
+    </script>
+---
+<script>
+        // CONFIG
+        const LINKS = { poster: "Clusiter2k26.pdf", brochure: "rule_book.pdf" };
+        function openResource(t) { window.open(LINKS[t] !== '#' ? LINKS[t] : alert("Link coming soon"), '_blank'); }
+
+        // --- REGISTRATION & CONTACT LOGIC ---
+        function redirectToForm() {
+            // Close event details modal if open
+            const wasProjectContest = currentModalId === 'innovara';
+            closeModal();
+
+            if (wasProjectContest) {
+                // Open project contest registration
+                openProjectRegModal();
+                return;
+            }
+
+            document.getElementById('reg-modal-overlay').style.visibility = 'visible';
+            document.getElementById('reg-modal-overlay').style.opacity = '1';
+            document.getElementById('reg-modal-content').style.transform = 'scale(1)';
+            document.body.style.overflow = 'hidden';
+            fetchFormQr();
+            if (teammateCount === 0) addTeammate();
+        }
+
+        function closeRegModal() {
+            document.getElementById('reg-modal-overlay').style.opacity = '0';
+            document.getElementById('reg-modal-content').style.transform = 'scale(0.95)';
+            setTimeout(() => {
+
+                document.getElementById('reg-modal-overlay').style.visibility = 'hidden';
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        async function fetchFormQr() {
+            try {
+                const res = await fetch('api.php?action=get_qr');
+                const data = await res.json();
+
+                if (data.success && data.paths && data.paths.length > 0) {
+                    // Shuffle the paths array for random distribution
+                    const paths = data.paths.sort(() => 0.5 - Math.random());
+                    let currentIdx = 0;
+                    const img = document.getElementById('formQrCode');
+                    const container = document.getElementById('formQrContainer');
+                    const unavailable = document.getElementById('formQrUnavailable');
+
+                    function tryLoadImage() {
+                        if (currentIdx >= paths.length) {
+                            // All images failed
+                            container.classList.add('hidden');
+                            unavailable.classList.remove('hidden');
+                            return;
+                        }
+
+                        img.onload = () => {
+                            img.onload = null;
+                            img.onerror = null;
+                            container.classList.remove('hidden');
+                            unavailable.classList.add('hidden');
+                        };
+
+                        img.onerror = () => {
+                            currentIdx++;
+                            tryLoadImage();
+                        };
+
+                        img.src = paths[currentIdx];
+                    }
+
+                    tryLoadImage();
+
+                } else {
+                    document.getElementById('formQrContainer').classList.add('hidden');
+                    document.getElementById('formQrUnavailable').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("Failed to load QR code:", err);
+                document.getElementById('formQrContainer').classList.add('hidden');
+                document.getElementById('formQrUnavailable').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            formData.append('action', 'register');
+
+            const status = document.getElementById('regStatus');
+            status.innerText = "Submitting...";
+            status.classList.remove('hidden', 'text-green-500', 'text-red-500');
+            status.classList.add('text-yellow-500');
+
+            try {
+                const res = await fetch('api.php', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    status.innerText = "Done!";
+                    status.classList.replace('text-yellow-500', 'text-green-500');
+                    form.reset();
+
+                    // Show Popup
+                    const modal = document.getElementById('successModal');
+                    const modalContent = document.getElementById('successModalContent');
+                    const modalMessage = document.getElementById('successModalMessage');
+                    if (modalMessage) {
+                        modalMessage.innerText = "Your registration details have been received successfully. We will share the confirmation email with you shortly after we verify your payment.";
+                    }
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                } else {
+                    status.innerText = data.message || "Failed.";
+                    status.classList.replace('text-yellow-500', 'text-red-500');
+                }
+            } catch (err) {
+                status.innerText = "Server Error.";
+                status.classList.replace('text-yellow-500', 'text-red-500');
+            }
+        });
+
+        document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+
+            const status = document.getElementById('contactStatus');
+            status.innerText = "Sending...";
+            status.classList.remove('hidden', 'text-green-500', 'text-red-500');
+            status.classList.add('text-yellow-500');
+
+            const formData = new URLSearchParams();
+            formData.append('action', 'contact');
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('message', message);
+
+            try {
+                const res = await fetch('api.php', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    status.innerText = "Message sent successfully!";
+                    status.classList.replace('text-yellow-500', 'text-green-500');
+                    form.reset();
+                    setTimeout(() => {
+                        status.classList.add('hidden');
+                    }, 3000);
+                } else {
+                    status.innerText = "Failed to send message.";
+                    status.classList.replace('text-yellow-500', 'text-red-500');
+                }
+            } catch (err) {
+                status.innerText = "Error.";
+                status.classList.replace('text-yellow-500', 'text-red-500');
+            }
+        });
+
+        // --- THREE.JS NEBULA SWARM BACKGROUND ---
+        const scene = new THREE.Scene();
+        // Add subtle fog for depth
+        scene.fog = new THREE.FogExp2(0x030008, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create particles
+        const geometry = new THREE.BufferGeometry();
+        const count = 3000;
+        const posArray = new Float32Array(count * 3);
+        const colorsArray = new Float32Array(count * 3);
+
+        for (let i = 0; i < count * 3; i += 3) {
+            // Spherical distribution
+            const r = 40 * Math.cbrt(Math.random());
+            const theta = Math.random() * 2 * Math.PI;
+            const phi = Math.acos(2 * Math.random() - 1);
+
+            posArray[i] = r * Math.sin(phi) * Math.cos(theta);
+            posArray[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+            posArray[i + 2] = r * Math.cos(phi);
+
+            // Colors: Mix of Purple, Cyan, Pink
+            const colorMix = Math.random();
+            if (colorMix < 0.33) { // Purple
+                colorsArray[i] = 0.54; colorsArray[i + 1] = 0.36; colorsArray[i + 2] = 0.96;
+            } else if (colorMix < 0.66) { // Cyan
+                colorsArray[i] = 0.02; colorsArray[i + 1] = 0.71; colorsArray[i + 2] = 0.83;
+            } else { // Pink
+                colorsArray[i] = 0.92; colorsArray[i + 1] = 0.28; colorsArray[i + 2] = 0.6;
+            }
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const starMesh = new THREE.Points(geometry, material);
+        scene.add(starMesh);
+        camera.position.z = 30;
+
+        // Interaction
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX / window.innerWidth - 0.5;
+            mouseY = e.clientY / window.innerHeight - 0.5;
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotate entire galaxy slowly
+            starMesh.rotation.y = elapsedTime * 0.05;
+            starMesh.rotation.x = elapsedTime * 0.02;
+
+            // Mouse interaction (parallax)
+            starMesh.rotation.y += mouseX * 0.1;
+            starMesh.rotation.x += mouseY * 0.1;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- 3D TILT EFFECT FOR CARDS ---
+        document.querySelectorAll('.tilt-container').forEach(container => {
+            const card = container.querySelector('.tilt-card');
+
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -15; // Max tilt 15deg
+                const rotateY = ((x - centerX) / centerX) * 15;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+
+        // --- GSAP ANIMATIONS ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero entrance
+        gsap.from(".gsap-hero", {
+            y: 50, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out", delay: 0.5
+        });
+
+        // --- MODAL LOGIC ---
+        const modalOverlay = document.getElementById('modal-overlay');
+        const eventsData = {
+            'innovara': {
+                title: "Innovara",
+                cat: "Project Contest",
+                time: "10:30 AM – 1:00 PM",
+                venue: "IT SEMINAR HALL",
+                icon: "fa-flask",
+                isProjectContest: true,
+                desc: `<strong>Innovation & Project Showcase</strong><br><br>
+                       Discover ideas, artistic projects and new technologies through Innovara. A place created to help students turn their thoughts into solutions, show their work and meet others who are also interested in creating.<br><br>
+                       <strong>Benefits:</strong><br>
+                       • Show off projects and new ideas<br>
+                       • Learn about real-world technologies and ways to solve problems<br>
+                       • Improve skills in thinking through problems and starting businesses<br>
+                       • Talk and work with other people who like to create<br>
+                       • Get advice from people who work in the industry and mentors<br>
+                       • Support creativity, learning and putting ideas into action`,
+                rules: [
+                    "Bring your College ID Card and registration tag",
+                    "Participate as an individual or as part of a team as the event says",
+                    "Bring the things you need for your project and any items",
+                    "All participants must finish their presentation or demo in the time given",
+                    "Stay respectful, be on time and act properly",
+                    "Listen to what the people in charge and the judges say",
+                    "The registration cost cannot be given back"
+                ],
+                heads: [
+                    { name: "Arun", phone: "+91 76048 47895" },
+                    { name: "Dhanush", phone: "+91 93618 20110" }
+                ]
+            },
+            'workshop': {
+                title: "Agentic AI",
+                cat: "Workshop",
+                time: "09:15 AM – 1:00 PM",
+                venue: "SMART MEETING HALL",
+                icon: "fa-chalkboard-teacher",
+                desc: `<strong>Immersive Workshop on Business AI</strong><br><br>
+                       Explore the intersection of artificial intelligence and business applications. Learn from industry experts about implementing AI solutions to drive growth and innovation.<br><br>
+                       <strong>Resource Persons:</strong><br>
+                       • <strong>Bhuvana Prasad</strong>, Senior software engineer - level 2, Zemoso Technologies, Chennai<br>
+                       • <strong>ARJ KUMAR</strong>, Senior Engineer, Kenvue solutions India pvt ltd, Bengaluru`,
+                rules: [
+                    "Bring your College ID Card and registration tag",
+                    "Individual participation only",
+                    "Bring your own laptop and accessories",
+                    "Attend the entire duration for certificate",
+                    "Maintain discipline, punctuality, and decorum",
+                    "Follow instructions from coordinators",
+                    "Registration fees are non-refundable"
+                ],
+                heads: [
+                    { name: "ROSHNI T M", phone: "+91 95975 45997" },
+                    { name: "THIRUMALESH S S", phone: "+91 75488 70230" }
+                ]
+            },
+            'pitch_royale': {
+                title: "Pitch Royale",
+                cat: "Technical",
+                time: "10:30 AM – 1:00 PM",
+                venue: "DBMS, CaseTools",
+                icon: "fa-rocket",
+                desc: `<strong>Idea Presentation Event</strong><br><br>
+                       Pitch Royale offers students a platform to present innovative technological ideas solving real-world problems. Teams will pitch before an expert panel, emphasizing originality and feasibility.<br><br>
+                       <strong>Domains:</strong><br>
+                       • Smart Home (IoT)<br>
+                       • Generative AI vs Agentic AI<br>
+                       • Cybersecurity & Digital Trust<br>
+                       • Cloud & Edge Computing<br>
+                       • Big Data Analytics`,
+                rules: [
+                    "PPT: Maximum 12 slides",
+                    "Duration: 5 minutes presentation + 2 minutes Q&A (optional)",
+                    "Team: Individual or 2 members per team",
+                    "AI Usage: Completely AI-generated PPTs are not allowed",
+                    "Domains: Topics must be strictly within the mentioned domains",
+                    "Registration: No on-spot registration",
+                    "Submission: Send your PPT to pr.clusiter2k26@gmail.com"
+                ],
+                heads: [
+                    { name: "DEIVANAI A", phone: "+91 93456 43338" },
+                    { name: "MADHAN KUMAR E G D", phone: "+91 88707 92326" }
+                ]
+            },
+            'digital_doppelganger': {
+                title: "Doppelganger",
+                cat: "Technical",
+                time: "10:30 AM – 1:00 PM",
+                venue: "Fosslab",
+                icon: "fa-layer-group",
+                desc: "The ultimate UI challenge. You will be given a target website or design, and your task is to replicate it exactly using HTML/CSS or Figma. Precision is key.",
+                rules: [
+                    
+                    "Bring Your Own Laptop,Mobile phone – Laptop,phoneand charger are mandatory",
+                    "TeamSize - 1 member",
+                    "AI Tools Allowed – Vibecoding and AI-assisted development are permitted",
+                    "No Pre-Built Projects – Everything must be created during the event",
+                    "No Copying or Sharing – Any malpractice leads to immediate disqualification",
+                    
+                ],
+                heads: [
+                    { name: "VIJAY ADHITH A R", phone: "+91 63855 78750" },
+                    { name: "PADMA", phone: "+91 88703 37636" }
+                ]
+            },
+            'high_on_tech': {
+                title: "High on Tech",
+                cat: "Technical",
+                time: "10:30 AM – 01:00 PM",
+                venue: "Honeywell",
+                icon: "fa-microchip",
+                desc: `<strong>Intense Technical & Debugging Event</strong><br><br>
+                       <strong>Round 1: Technical Quiz (30 Mins)</strong><br>
+                       Test core technical knowledge through a quiz. Top teams qualify.<br><br>
+                       <strong>Round 2: Debugging Challenge (30 Mins)</strong><br>
+                       Identify and correct errors in given code snippets. Points awarded for correct logic and output.<br><br>
+                       <strong>Round 3: Fill in the Blanks (30 Mins)</strong><br>
+                       Complete incomplete code snippets. Final scores calculated based on accuracy.`,
+                rules: [
+                    "Team size: 2 members",
+                    "No mobile phones, smart watches, or external help",
+                    "Any malpractice leads to immediate disqualification",
+                    "Elimination based on Points / Score"
+                ],
+                heads: [
+                    { name: "ROSHMITHA P K", phone: "+91 78456 43208" },
+                    { name: "SRIRAM", phone: "+91 63809 96443" }
+                ]
+            },
+            'decrypt_or_die': {
+                title: "Decrypt or Die",
+                cat: "Technical",
+                time: "10:30 AM – 1:00 PM",
+                venue: "MPMC Lab",
+                icon: "fa-terminal",
+                desc: `<strong>Intense Coding & Logic Survival</strong><br><br>
+                       <strong>FLAG={VEgxTktfTDFLRV9BX0g0Q0tFUg==}</strong><br>
+                       <strong>Round 1: Quiz Solving</strong><br>
+                       Test participants’core technical knowledge and logical thinking within the time limit..<br><br>
+                       <strong>Round 2: Puzzle Solving </strong><br>
+                       Solve the given Decryption based puzzle with in the time limit within the time limit. Top teams qualify.<br><br>
+                       <strong>Round 3: Digital Treasure Hunt </strong><br>
+                       Solve clues using Key Each clue leads to the next Plot to reveal the final flag/code.`,
+                rules: [
+                    "Team Size: 2 Members",
+                    "Laptop need to bring by participate ",
+                    "Malpractice leads to immediate disqualification",
+                    "Elimination based on Points/Score"
+                ],
+                heads: [
+                    { name: "DHANUSH BABU L B", phone: "+91 82486 86358" },
+                    { name: "ABISHALINI K S", phone: "+91 76671 33422" }
+                ]
+            },
+            'alice': {
+                title: "Alice in Borderland",
+                cat: "Non-Technical",
+                time: "1:45 PM – 3:00 PM",
+                venue: "Fosslab",
+                icon: "fa-heart",
+                desc: `<strong>Strategy-Based Survival Competition</strong><br><br>
+                       <strong>Round 1: Jack of Hearts (35 Mins)</strong><br>
+                       A game of trust and deception. Ten players: Thieves vs Challengers. Identify your hidden symbol by relying on others.<br><br>
+                       <strong>Round 2: Queen of Spade (30 Mins)</strong><br>
+                       Memory and communication game. Observer memorizes a card order and guides the team using indirect clues. Recreate the correct order to qualify.<br><br>
+                       <strong>Round 3: King of Diamonds (20 Mins)</strong><br>
+                       Card elimination game. Avoid Jokers and collecting 3+ A/J/Q/K cards. Hold to lock your cards. Highest total value wins.`,
+                rules: [
+                    "Team Size: Solo participation",
+                    "Duration: 5-10 min for each game.",
+                    "Rounds: Event consists of 3 challenging rounds.",
+                    "Fair Play: Cheating and unfair practices are strictly prohibited.",
+                    "Overall Winner: The player with the highest score in Round 3."
+                ],
+                heads: [
+                    { name: "AISWARIYA S S", phone: "+91 82709 83658" },
+                    { name: "VENUPRAKASH P", phone: "+91 72005 99712" }
+                ]
+            },
+            'mystery_bidders': {
+                title: "Auction Arena",
+                cat: "Non-Technical",
+                time: "1:45 PM – 3:00 PM",
+                venue: "Seminar Hall",
+                icon: "fa-gavel",
+                desc: "<strong>IPL Auction Simulation</strong><br><br>Build your dream team! Teams will be given a virtual budget to bid on players. Strategy, budget management, and cricket knowledge are your best weapons.",
+                rules: [
+                    "Bring your College ID Card",
+                    "Minimum 3 and maximum 6 members per team",
+                    "Each team must bid for 7–11 players: 1 WK, 2 Batters, 2 Bowlers, and 2 All-Rounders",
+                    "Round 1 – IPL Quiz: Each team will be asked basic IPL questions. Round 2 – Player Bidding",
+                    "Each team will have a ₹100 Cr purse for the auction",
+                    "Bidding will start from the player’s base price and increase in fixed increments of ₹50 Lakhs"
+                ],
+                heads: [
+                    { name: "SURIYA PRASATH T H", phone: "+91 82485 11748" },
+                    { name: "DHAYALINI", phone: "+91 90254 56587" }
+                ]
+            }
+        };
+
+        let currentModalId = null;
+        function openModal(id) {
+            currentModalId = id;
+            const d = eventsData[id];
+            if (!d) return;
+            document.getElementById('modal-title').innerText = d.title;
+            document.getElementById('modal-cat').innerText = d.cat;
+            document.getElementById('modal-time').innerText = d.time;
+            document.getElementById('modal-venue').innerText = d.venue;
+            document.getElementById('modal-desc').innerHTML = d.desc;
+            document.getElementById('modal-icon-container').innerHTML = `<i class="fas ${d.icon}"></i>`;
+            document.getElementById('modal-rules').innerHTML = d.rules.map(r => `<li class="flex items-start gap-3"><i class="fas fa-check-circle text-primary mt-1 shrink-0"></i> <span>${r}</span></li>`).join('');
+
+            const headsContainer = document.getElementById('modal-heads-container');
+            const headsGrid = document.getElementById('modal-heads');
+            if (d.heads && d.heads.length > 0) {
+                headsGrid.innerHTML = d.heads.map(h => `
+                    <div class="p-4 bg-white/5 rounded-xl border border-white/5 text-center flex flex-col justify-center transition-all hover:bg-white/10 hover:border-white/20">
+                        <h5 class="text-white font-bold mb-1">${h.name}</h5>
+                        <p class="text-sm text-gray-400 font-mono tracking-wide">${h.phone}</p>
+                    </div>
+                `).join('');
+                headsContainer.classList.remove('hidden');
+            } else {
+                headsContainer.classList.add('hidden');
+            }
+            modalOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- Countdown Timer Logic ---
+        const targetDate = new Date("Sept 18, 2026 09:30:00").getTime();
+
+        const updateCountdown = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const format = (val) => val < 10 && val >= 0 ? '0' + val : val;
+
+            const dEl = document.getElementById("cd-days");
+            if (dEl) {
+                dEl.innerText = format(days);
+                document.getElementById("cd-hours").innerText = format(hours);
+                document.getElementById("cd-mins").innerText = format(mins);
+                document.getElementById("cd-secs").innerText = format(secs);
+            }
+
+            if (distance < 0) {
+                clearInterval(updateCountdown);
+                if (dEl) {
+                    dEl.innerText = "00";
+                    document.getElementById("cd-hours").innerText = "00";
+                    document.getElementById("cd-mins").innerText = "00";
+                    document.getElementById("cd-secs").innerText = "00";
+                }
+            }
+        }, 1000);
+    </script>
+---
+<script>
+        // --- PROJECT CONTEST MODAL LOGIC ---
+        function openProjectRegModal() {
+            const overlay = document.getElementById('project-reg-overlay');
+            const content = document.getElementById('project-reg-content');
+            overlay.style.visibility = 'visible';
+            overlay.style.opacity = '1';
+            content.style.transform = 'scale(1)';
+            document.body.style.overflow = 'hidden';
+            fetchProjectQr();
+        }
+
+        function closeProjectRegModal() {
+            const overlay = document.getElementById('project-reg-overlay');
+            const content = document.getElementById('project-reg-content');
+            overlay.style.opacity = '0';
+            content.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                overlay.style.visibility = 'hidden';
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        async function fetchProjectQr() {
+            try {
+                const res = await fetch('api.php?action=get_project_qr');
+                const data = await res.json();
+                const img = document.getElementById('projectQrCode');
+                const container = document.getElementById('projectQrContainer');
+                const unavailable = document.getElementById('projectQrUnavailable');
+
+                if (data.success && data.paths && data.paths.length > 0) {
+                    const paths = data.paths.sort(() => 0.5 - Math.random());
+                    img.onload = () => { container.classList.remove('hidden'); unavailable.classList.add('hidden'); };
+                    img.onerror = () => { container.classList.add('hidden'); unavailable.classList.remove('hidden'); };
+                    img.src = paths[0];
+                } else {
+                    container.classList.add('hidden');
+                    unavailable.classList.remove('hidden');
+                }
+            } catch (err) {
+                document.getElementById('projectQrContainer').classList.add('hidden');
+                document.getElementById('projectQrUnavailable').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('projectRegForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            formData.append('action', 'register_project');
+
+            const status = document.getElementById('projectRegStatus');
+            const btn = document.getElementById('btnProjectSubmit');
+            status.innerText = "Submitting...";
+            status.classList.remove('hidden', 'text-green-500', 'text-red-500');
+            status.classList.add('text-yellow-500');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('api.php', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    status.innerText = "Registration submitted successfully!";
+                    status.classList.replace('text-yellow-500', 'text-green-500');
+                    form.reset();
+                    setTimeout(() => {
+                        closeProjectRegModal();
+                        // Show success modal
+                        const modal = document.getElementById('successModal');
+                        const modalContent = document.getElementById('successModalContent');
+                        const modalMessage = document.getElementById('successModalMessage');
+                        if (modalMessage) {
+                            modalMessage.innerText = "Your project registration has been received! Our coordinators will verify your payment and update the status soon.";
+                        }
+                        if (modal && modalContent) {
+                            modal.classList.remove('hidden');
+                            setTimeout(() => { modalContent.style.transform = 'scale(1)'; modalContent.style.opacity = '1'; }, 50);
+                        }
+                    }, 1500);
+                } else {
+                    status.innerText = data.message || "Failed.";
+                    status.classList.replace('text-yellow-500', 'text-red-500');
+                }
+            } catch (err) {
+                status.innerText = "Server Error.";
+                status.classList.replace('text-yellow-500', 'text-red-500');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+---
+<script>
+    fetch('api.php?action=track_view').catch(() => { });
+</script>

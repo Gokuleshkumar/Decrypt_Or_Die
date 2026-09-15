@@ -1238,7 +1238,7 @@
           <div class="card-title-text"><i class="fa-solid fa-id-card"></i> Participant Login</div>
         </div>
 
-        <form id="registration-form">
+        <form id="registration-form" onsubmit="return handleRegistrationSubmit(event)">
           <div class="form-grid">
 
             <div class="form-field">
@@ -1356,7 +1356,7 @@
           <div class="round-card locked" id="nav-round-3" onclick="switchRoundTab(3)">
             <div class="r-num">03</div>
             <div>
-              <div class="r-name">Neural Core</div>
+              <div class="r-name">Capture The Flag</div>
               <div class="r-sub">Memory Matrix</div>
             </div>
             <div class="r-state" id="status-r3"><i class="fa-solid fa-lock"></i> Locked</div>
@@ -1427,7 +1427,7 @@
                     <div class="q-progress-tag" id="q-counter-tag">Question 1 of 25</div>
                     <div class="timer-val"
                       style="font-size: 1.1rem; color: var(--accent-red); font-family: var(--font-mono); font-weight: 700;">
-                      <i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">35:00</span>
+                      <i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">30:00</span>
                     </div>
                   </div>
                   <div class="badge-pill"
@@ -1505,7 +1505,7 @@
                   </span>
                 </div>
 
-                <p style="color: var(--text-sub); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
+                <p id="r1-waiting-desc" style="color: var(--text-sub); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
                   The administrators are currently reviewing team submissions. Once your team is verified and approved
                   by the Admin in the Admin Portal, <strong>Round 2: Mainframe CLI Breach</strong> will automatically
                   unlock!
@@ -1572,7 +1572,7 @@
                     <div class="q-progress-tag" id="pz-counter-tag">Puzzle 1 of 6</div>
                     <div class="timer-val"
                       style="font-size: 1.1rem; color: var(--accent-red); font-family: var(--font-mono); font-weight: 700;">
-                      <i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">35:00</span>
+                      <i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">30:00</span>
                     </div>
                   </div>
                   <div class="badge-pill"
@@ -1673,7 +1673,7 @@
                 style="background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.4rem; text-align: left; margin-bottom: 1.5rem;">
                 <div
                   style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; margin-bottom: 1rem;">
-                  <span
+                  <span id="r2-waiting-status-text"
                     style="color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-hourglass-half fa-spin-pulse"></i> Waiting results for round-2
                   </span>
@@ -1705,42 +1705,113 @@
         <div class="stage-panel" id="stage-round-3">
           <div class="stage-banner">
             <div>
-              <h2><i class="fa-solid fa-brain"></i> ROUND 3: NEURAL CORE OVERDRIVE</h2>
-              <p class="stage-desc">Align memory grid nodes to achieve 100% synchronization and complete the challenge.
-              </p>
+              <h2><i class="fa-solid fa-brain"></i> ROUND 3: FINAL DECRYPTION</h2>
+              <p class="stage-desc">Review instructions below and click Start Round 3 to begin.</p>
             </div>
             <span class="lvl-tag hard">Level 3</span>
           </div>
 
-          <div class="stage-grid">
-            <!-- Grid -->
-            <div class="card-box">
-              <div class="box-title"><i class="fa-solid fa-border-all"></i> Memory Node Matrix</div>
-              <p class="box-desc">Click memory tiles to toggle bit states (0 / 1) until target alignment is reached.</p>
+          <!-- SUB-VIEW 1: RULES & INSTRUCTIONS -->
+          <div id="r3-rules-view" class="r2-subview"
+            style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="rules-box-hero">
+              <div class="box-title"><i class="fa-solid fa-shield-halved"></i> Round 3 Instructions & Rules</div>
 
-              <div class="grid-center">
-                <div class="matrix-4x4" id="neural-matrix-grid">
-                  <!-- JS generated -->
-                </div>
+              <ul class="rules-bullet-list">
+                <li><i class="fa-solid fa-clock t-blue"></i> <span>Duration: <strong>35 minutes</strong></span></li>
+                <li><i class="fa-solid fa-puzzle-piece t-gold"></i> <span>Number of Tasks: <strong>8 Advanced Tasks</strong></span></li>
+                <li><i class="fa-solid fa-stopwatch t-green"></i> <span>Scoring: <strong>Based on puzzle solving speed in less time (Time Bonus)</strong></span></li>
+                <li><i class="fa-solid fa-lock t-red"></i> <span>Proctoring: <strong>Fullscreen enforcement and tab monitoring active</strong></span></li>
+              </ul>
+
+              <div class="rules-footer-action">
+                <button class="pro-btn primary lg" id="btn-start-r3-puzzles" onclick="startRound3Tasks()"
+                  style="max-width: 320px; font-size: 1.05rem;">
+                  <i class="fa-solid fa-play"></i> Start Round 3
+                </button>
               </div>
             </div>
+          </div>
 
-            <!-- Sync Meter -->
-            <div class="card-box">
-              <div class="box-title"><i class="fa-solid fa-bullseye"></i> Synchronization Meter</div>
+          <!-- SUB-VIEW 2: PUZZLE SOLVING INTERFACE -->
+          <div id="r3-puzzle-view" class="r2-subview" style="display: none; height: 100%;">
+            <div class="quiz-layout-grid">
 
-              <div class="sync-card">
-                <div class="sync-score" id="sync-percentage">0%</div>
-                <div class="sync-sub" id="sync-status-label">Initializing Node Alignment...</div>
+              <!-- Main Puzzle Card -->
+              <div class="card-box quiz-main-card">
+                <div class="quiz-card-head" style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="q-progress-tag" id="r3-task-counter-tag">Task 1 of 8</div>
+                    <div class="timer-val"
+                      style="font-size: 1.1rem; color: var(--accent-red); font-family: var(--font-mono); font-weight: 700;">
+                      <i class="fa-solid fa-clock"></i> <span class="countdown-timer-display">45:00</span>
+                    </div>
+                  </div>
+                  <div class="badge-pill"
+                    style="border-color: rgba(16, 185, 129, 0.5); color: #10b981; background: rgba(16, 185, 129, 0.1); font-size: 0.72rem;">
+                    <i class="fa-solid fa-brain"></i> FINAL CHALLENGE
+                  </div>
+                </div>
+
+                <div class="quiz-prompt-text" id="r3-prompt-title"
+                  style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem;">
+                  Loading Task...
+                </div>
+
+                <!-- Ciphertext Display Box -->
+                <div
+                  style="background: var(--bg-dark); border: 1px dashed var(--accent-blue); padding: 1.2rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-gold); font-size: 1.1rem; letter-spacing: 1px; word-break: break-all; margin-bottom: 1.2rem; position: relative;"
+                  id="r3-task-box">
+                  <span
+                    style="font-size: 0.7rem; color: var(--text-sub); display: block; margin-bottom: 0.3rem; font-family: var(--font-sans);">TASK DESCRIPTION:</span>
+                  <span id="r3-task-text">...</span>
+                </div>
+
+                <!-- Clues Box -->
+                <div id="r3-clues-section" style="display: none; margin-bottom: 1.2rem; gap: 0.5rem; flex-direction: column;">
+                  <button class="pro-btn sm" id="btn-reveal-clue-1" onclick="revealR3Clue(1)" style="align-self: flex-start;"><i class="fa-solid fa-eye"></i> Reveal Clue 1 (-5 points)</button>
+                  <div id="r3-clue-1-text" style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.8rem; border-radius: 6px; color: var(--text-sub); font-size: 0.9rem; margin-bottom: 0.5rem;"></div>
+
+                  <button class="pro-btn sm" id="btn-reveal-clue-2" onclick="revealR3Clue(2)" style="align-self: flex-start; display: none;"><i class="fa-solid fa-eye"></i> Reveal Clue 2 (-10 points)</button>
+                  <div id="r3-clue-2-text" style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.8rem; border-radius: 6px; color: var(--text-sub); font-size: 0.9rem;"></div>
+                </div>
+
+                <!-- Input Box -->
+                <div id="r3-input-container" style="margin-bottom: 1.2rem;">
+                  <label
+                    style="display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 0.4rem;">ENTER YOUR ANSWER:</label>
+                  <input type="text" id="r3-answer-input" oninput="handleR3InputAnswer(this.value)"
+                    placeholder="Type your answer here..."
+                    style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); color: #fff; padding: 0.85rem 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 1.05rem;"
+                    autocomplete="off" spellcheck="false" />
+                </div>
+
+                <!-- Nav Controls -->
+                <div class="quiz-nav-actions">
+                  <button class="pro-btn sm" id="btn-prev-r3" onclick="navigateR3Task(-1)"><i
+                      class="fa-solid fa-chevron-left"></i> Previous</button>
+                  <button class="pro-btn primary sm" id="btn-next-r3" onclick="navigateR3Task(1)">Next Task <i
+                      class="fa-solid fa-chevron-right"></i></button>
+                  <button class="pro-btn success lg" id="btn-submit-r3-tasks"
+                    onclick="if (!state.disqualified) submitR3Tasks()"
+                    style="display: none; background: var(--accent-green); border-color: var(--accent-green); cursor: pointer;">
+                    <i class="fa-solid fa-check-double"></i> Submit Round 3
+                  </button>
+                </div>
               </div>
 
-              <div class="action-row" style="margin-top: 2rem;">
-                <button class="pro-btn" id="btn-reset-nodes"><i class="fa-solid fa-rotate"></i> Reset Grid</button>
-                <button class="pro-btn primary lg" id="btn-r3-submit"><i class="fa-solid fa-bolt"></i> Compile &
-                  Complete</button>
+              <!-- Question/Puzzle Palette Grid -->
+              <div class="card-box palette-side-card">
+                <div class="box-title"><i class="fa-solid fa-grid"></i> Task Palette (1 - 8)</div>
+                <div class="palette-grid" id="r3-palette-grid">
+                  <!-- 8 palette tiles -->
+                </div>
+                <div class="palette-legend">
+                  <span><span class="dot-legend current"></span> Current</span>
+                  <span><span class="dot-legend answered"></span> Solved</span>
+                </div>
               </div>
 
-              <div class="feedback-box" id="r3-feedback"></div>
             </div>
           </div>
         </div>
@@ -1795,7 +1866,7 @@
           </span>
         </div>
 
-        <p style="color: var(--text-sub); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        <p id="global-waiting-desc" style="color: var(--text-sub); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem;">
           The Admin Portal is currently reviewing team submissions. Please stay on this screen. As soon as the
           administrator verifies your submission and selects your team, <strong>Round 2: Mainframe CLI Breach</strong>
           will automatically unlock!
@@ -1852,7 +1923,7 @@
           onclick="closeModal('modal-rules')">&times;</button>
       </div>
       <div class="modal-body">
-        <p>1. Complete Round 1 (Cipher), Round 2 (CLI), and Round 3 (Neural Core) sequentially.</p>
+        <p>1. Complete Round 1 (Cipher), Round 2 (CLI), and Round 3 (Capture The Flag) sequentially.</p>
         <p>2. Registration details are logged into the backend database server upon login.</p>
         <p>3. Requesting hints deducts 50 points from team score.</p>
       </div>
