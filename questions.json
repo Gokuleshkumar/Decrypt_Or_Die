@@ -1,127 +1,127 @@
 [
   {
-    "q": "Consider the following C statements: p = 10; q = &p; *p = *q + 5. What is the final value of p?",
-    "options": ["5", "10", "15", "20"],
-    "correct": 2
-  },
-  {
-    "q": "An array contains: 4, 8, 12, 16, 20. If the positions start from 0, which value is stored at index 3?",
-    "options": ["8", "12", "16", "20"],
-    "correct": 2
-  },
-  {
-    "q": "A Java program performs: int a = 20; int b = 0; int c = a / b. What type of exception occurs?",
-    "options": ["NullPointerException", "ArithmeticException", "IOException", "ArrayIndexOutOfBoundsException"],
+    "q": "Number Lock: A 3-digit code follows these rules: First digit = 4. Second digit = first digit + 2. Third digit = second digit − 3. Find the code.",
+    "options": ["423", "463", "453", "465"],
     "correct": 1
   },
   {
-    "q": "A Python function returns the square of its input. If the function is called with 7, what value is returned?",
-    "options": ["14", "21", "42", "49"],
+    "q": "Hidden Word: Given the word COMPUTER, take the letters in the odd-numbered positions (1st, 3rd, 5th, 7th). What do you get?",
+    "options": ["COMP", "CMUE", "OPTE", "CUTR"],
+    "correct": 1
+  },
+  {
+    "q": "Logic Puzzle: A robot moves 10 steps East, then 5 steps North, then 10 steps West. Where is it relative to its starting point?",
+    "options": ["5 steps North", "10 steps West", "5 steps South", "At the starting point"],
+    "correct": 0
+  },
+  {
+    "q": "Symbol Code: ★ = 5, ◆ = 3, ● = 2. Find: ★ × ◆ + ●",
+    "options": ["15", "16", "17", "18"],
+    "correct": 2
+  },
+  {
+    "q": "Word Value Puzzle: Using A = 1, B = 2, … Z = 26, find the value of CODE.",
+    "options": ["25", "26", "27", "28"],
+    "correct": 2
+  },
+  {
+    "q": "Recursion Challenge: Consider the following function F(n): if n = 1 return 1, else return n × F(n−1). Find F(6).",
+    "options": ["120", "720", "5040", "360"],
+    "correct": 1
+  },
+  {
+    "q": "Operator Puzzle: If A # B = (A × B) + A, find 5 # 4.",
+    "options": ["20", "24", "25", "29"],
+    "correct": 2
+  },
+  {
+    "q": "Final Decode: 20 – 5 – 3 – 8. Convert the numbers into letters (A=1, B=2...), then rearrange the letters to form an IT-related word.",
+    "options": ["CODE", "DATA", "TECH", "HACK"],
+    "correct": 2
+  },
+  {
+    "q": "Multi-Step Decryption: Take the word LQIR. Move every letter 3 positions backward in the alphabet. What is the result?",
+    "options": ["DATA", "INFO", "CODE", "HELP"],
+    "correct": 1
+  },
+  {
+    "q": "Code Lock: 682 → One digit is correct and in the correct position. 614 → One digit is correct but in the wrong position. 738 → No digit is correct. Find the possible 3-digit password.",
+    "options": ["642", "612", "684", "482"],
+    "correct": 0
+  },
+  {
+    "q": "Algorithm Puzzle: Start with n = 3. Perform the operation n = n × 3 + 2 twice. What is the final value of n?",
+    "options": ["35", "38", "41", "44"],
+    "correct": 2
+  },
+  {
+    "q": "Grid Decryption: Use the grid: D E C R A P T X Y P T O. Path: (1,1) → (1,2) → (1,3) → (1,4) → (2,3) → (2,2) → (2,1). What word do you get?",
+    "options": ["DECRYPT", "DECODEX", "ENCRYPT", "CRYPTIC"],
+    "correct": 0
+  },
+  {
+    "q": "Mathematical Lock: A lock accepts a 3-digit number. First digit = 2. Second digit = first digit + 3. Third digit = second digit − 1. Find the code.",
+    "options": ["245", "253", "254", "264"],
+    "correct": 2
+  },
+  {
+    "q": "Multi-Level Puzzle: 20 – 5 – 3 – 8. Convert the numbers to letters, then reverse the resulting word. What is the final result?",
+    "options": ["TECH", "HCET", "CODE", "EDOC"],
+    "correct": 1
+  },
+  {
+    "q": "Final Boss Puzzle: Message = 3 – 15 – 4 – 5. Convert numbers into letters, then move every letter one position backward.",
+    "options": ["CODE", "DPDF", "BNCD", "AMBC"],
+    "correct": 2
+  },
+  {
+    "q": "Pattern Puzzle: Find the missing number: 2, 6, 12, 20, 30, ?",
+    "options": ["40", "42", "44", "46"],
+    "correct": 1
+  },
+  {
+    "q": "Reverse + Number: Take the word GAME. Reverse it, then convert each letter using A = 1, B = 2, … Z = 26.",
+    "options": ["7 - 1 - 13 - 5", "5 - 13 - 1 - 7", "5 - 1 - 13 - 7", "7 - 13 - 1 - 5"],
+    "correct": 1
+  },
+  {
+    "q": "Missing Letter: Find the missing letter: A, C, F, J, O, ?",
+    "options": ["S", "T", "U", "V"],
+    "correct": 2
+  },
+  {
+    "q": "Word Transformation: CODE → DPEF (each letter moved one position forward). What is DATA after the same transformation?",
+    "options": ["EBUB", "FCVC", "CZSZ", "EAVC"],
+    "correct": 0
+  },
+  {
+    "q": "Logic Lock: A 3-digit lock has digits whose sum is 12. The first digit is 2, and the last digit is twice the second digit. Is there a valid 3-digit code?",
+    "options": ["Yes, 248", "Yes, 236", "No valid 3-digit code exists", "Yes, 255"],
+    "correct": 2
+  },
+  {
+    "q": "Mathematical Code: If A = 2, B = 4, C = 6, D = 8, what is the code for CAB?",
+    "options": ["2 - 4 - 6", "6 - 4 - 2", "4 - 2 - 6", "6 - 2 - 4"],
     "correct": 3
   },
   {
-    "q": "F(1) = 1 and F(n) = n * F(n - 1). Find F(5).",
-    "options": ["25", "60", "120", "125"],
+    "q": "Grid Puzzle: Use the grid (3x3): A B C / D E F / G H I. Start at A. Move: Right → Down → Down → Left. Where do you reach?",
+    "options": ["D", "F", "G", "H"],
     "correct": 2
   },
   {
-    "q": "A linked list contains A -> B -> C -> D. Node B is removed, and A is linked directly to C. What is the resulting linked list?",
-    "options": ["A -> B -> C -> D", "A -> C -> D", "B -> C -> D", "A -> D"],
-    "correct": 1
-  },
-  {
-    "q": "In a binary tree, a node can have a maximum of two children. If Left child = A and Right child = None, how many children does the node have?",
-    "options": ["0", "1", "2", "3"],
-    "correct": 1
-  },
-  {
-    "q": "A hash table uses h(k) = k mod 10. Into which index will the key 47 be placed?",
-    "options": ["4", "7", "10", "47"],
-    "correct": 1
-  },
-  {
-    "q": "A student table stores the same department name repeatedly for many students. Which database design principle should be used to reduce this repeated data?",
-    "options": ["Encryption", "Normalization", "Indexing", "Backup"],
-    "correct": 1
-  },
-  {
-    "q": "A bank transaction transfers 500 from Account A to Account B. The money must either be transferred completely or not transferred at all. Which ACID property describes this requirement?",
-    "options": ["Consistency", "Isolation", "Durability", "Atomicity"],
-    "correct": 3
-  },
-  {
-    "q": "A transaction changes data and then executes ROLLBACK before executing COMMIT. What happens to the uncommitted changes?",
-    "options": ["They are permanently saved", "They are undone", "They are doubled", "They are encrypted"],
-    "correct": 1
-  },
-  {
-    "q": "Three processes are scheduled P1 -> P2 -> P3 -> P1 -> P2 -> P3. Each process gets 2 milliseconds before the next process runs. Which CPU scheduling algorithm is being used?",
-    "options": ["FCFS", "Shortest Job First", "Round Robin", "Priority Scheduling"],
-    "correct": 2
-  },
-  {
-    "q": "A computer has 4 GB RAM, but a program requires 6 GB of memory. Which operating-system technique can allow the program to use additional storage as memory?",
-    "options": ["Virtual Memory", "Multithreading", "Caching", "Spooling"],
+    "q": "Word Logic: From PROGRAM, remove every second letter starting from the second letter. Which letters remain?",
+    "options": ["PORM", "PRGM", "PGAM", "ROGM"],
     "correct": 0
   },
   {
-    "q": "P1 holds Resource A and waits for Resource B. P2 holds Resource B and waits for Resource A. Neither process can continue. What has occurred?",
-    "options": ["Starvation", "Deadlock", "Paging", "Fragmentation"],
+    "q": "Operating System Puzzle: Process P1 holds Resource A and waits for Resource B. Process P2 holds Resource B and waits for Resource A. What has occurred?",
+    "options": ["Race Condition", "Deadlock", "Starvation", "Mutual Exclusion"],
     "correct": 1
   },
   {
-    "q": "A video-call application prefers fast delivery and can tolerate some lost packets. Which protocol would generally be more suitable?",
-    "options": ["TCP", "UDP", "HTTP", "FTP"],
-    "correct": 1
-  },
-  {
-    "q": "Consider the address 00:1A:2B:3C:4D:5E. What type of network address is this?",
-    "options": ["IP address", "MAC address", "Port number", "Domain name"],
-    "correct": 1
-  },
-  {
-    "q": "A website gives a user a unique identifier after login. The website uses this identifier to recognize the same user across multiple requests. What is this identifier commonly called?",
-    "options": ["Session ID", "IP address", "MAC address", "DNS record"],
-    "correct": 0
-  },
-  {
-    "q": "Application A wants weather information from Application B. Application B provides predefined endpoints and rules that Application A can use to request the information. What interface allows this communication?",
-    "options": ["API", "BIOS", "Compiler", "Kernel"],
-    "correct": 0
-  },
-  {
-    "q": "A developer wants to experiment with a new feature without changing the main development line. What Git concept should the developer use?",
-    "options": ["Git Merge", "Git Branch", "Git Clone", "Git Reset"],
-    "correct": 1
-  },
-  {
-    "q": "You are inside a Linux directory. You want to display the files and folders present in the current directory. Which Linux command should you use?",
-    "options": ["cd", "pwd", "ls", "mkdir"],
-    "correct": 2
-  },
-  {
-    "q": "A user receives a message pretending to be from their bank. The message contains a fake link and asks the user to enter their username and password. What type of cybersecurity attack is this?",
-    "options": ["Phishing", "DDoS", "Ransomware", "Brute Force"],
-    "correct": 0
-  },
-  {
-    "q": "The word KHOOR was encrypted by shifting every letter 3 positions forward. Decrypt the message by shifting every letter 3 positions backward. What is the original word?",
-    "options": ["HELLO", "WORLD", "HOUSE", "HAPPY"],
-    "correct": 0
-  },
-  {
-    "q": "You receive FDW. Step 1: Move every letter 3 positions backward in the alphabet. Step 2: Read the resulting word. What word do you get?",
-    "options": ["CAT", "DOG", "BAT", "CAR"],
-    "correct": 0
-  },
-  {
-    "q": "A lock uses h(n) = n mod 7. The entered number is 30. What hash index does the lock generate?",
-    "options": ["2", "3", "4", "5"],
-    "correct": 0
-  },
-  {
-    "q": "Given: x = 2; y = 4; x = x + y; y = x * 2; x = y - x. Find the final values of x and y.",
-    "options": ["x = 2, y = 8", "x = 4, y = 12", "x = 6, y = 12", "x = 8, y = 12"],
+    "q": "Final Boss – Code Tracing: x=2, y=3. x = x×y; y = x+y; x = y−x; y = y×x. Find the final values of x and y.",
+    "options": ["x = 6, y = 9", "x = 3, y = 27", "x = 27, y = 3", "x = 9, y = 6"],
     "correct": 1
   }
 ]

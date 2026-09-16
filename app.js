@@ -5,128 +5,128 @@
 // 25 ROUND 1 QUALIFYING QUIZ QUESTIONS (BASE QUESTION BANK)
 const r1Questions = [
   {
-    q: "What does HTTP stand for?",
-    options: ["HyperText Transfer Protocol", "HyperTech Transfer Process", "High Text Transfer Program", "HyperText Transmission Portal"],
+    q: "Number Lock: A 3-digit code follows these rules: First digit = 4. Second digit = first digit + 2. Third digit = second digit − 3. Find the code.",
+    options: ["423", "463", "453", "465"],
+    correct: 1
+  },
+  {
+    q: "Hidden Word: Given the word COMPUTER, take the letters in the odd-numbered positions (1st, 3rd, 5th, 7th). What do you get?",
+    options: ["COMP", "CMUE", "OPTE", "CUTR"],
+    correct: 1
+  },
+  {
+    q: "Logic Puzzle: A robot moves 10 steps East, then 5 steps North, then 10 steps West. Where is it relative to its starting point?",
+    options: ["5 steps North", "10 steps West", "5 steps South", "At the starting point"],
     correct: 0
   },
   {
-    q: "Which default TCP port is used for HTTPS encrypted communication?",
-    options: ["Port 80", "Port 21", "Port 443", "Port 22"],
+    q: "Symbol Code: ★ = 5, ◆ = 3, ● = 2. Find: ★ × ◆ + ●",
+    options: ["15", "16", "17", "18"],
     correct: 2
   },
   {
-    q: "What type of cipher substitutes each plaintext letter by shifting a fixed number of positions?",
-    options: ["RSA Algorithm", "Caesar Cipher", "AES-256", "Diffie-Hellman"],
+    q: "Word Value Puzzle: Using A = 1, B = 2, … Z = 26, find the value of CODE.",
+    options: ["25", "26", "27", "28"],
+    correct: 2
+  },
+  {
+    q: "Recursion Challenge: Consider the following function F(n): if n = 1 return 1, else return n × F(n−1). Find F(6).",
+    options: ["120", "720", "5040", "360"],
     correct: 1
   },
   {
-    q: "Which data structure operates on a First-In, First-Out (FIFO) principle?",
-    options: ["Stack", "Queue", "Binary Tree", "Min Heap"],
+    q: "Operator Puzzle: If A # B = (A × B) + A, find 5 # 4.",
+    options: ["20", "24", "25", "29"],
+    correct: 2
+  },
+  {
+    q: "Final Decode: 20 – 5 – 3 – 8. Convert the numbers into letters (A=1, B=2...), then rearrange the letters to form an IT-related word.",
+    options: ["CODE", "DATA", "TECH", "HACK"],
+    correct: 2
+  },
+  {
+    q: "Multi-Step Decryption: Take the word LQIR. Move every letter 3 positions backward in the alphabet. What is the result?",
+    options: ["DATA", "INFO", "CODE", "HELP"],
     correct: 1
   },
   {
-    q: "What is the main security role of a network firewall?",
-    options: ["Cool down physical server racks", "Filter and monitor incoming and outgoing traffic", "Compress SQL database backups", "Increase wifi bandwidth"],
-    correct: 1
-  },
-  {
-    q: "Which hash function produces a 160-bit hash and is now considered cryptographically broken?",
-    options: ["SHA-256", "SHA-1", "SHA-512", "BLAKE2b"],
-    correct: 1
-  },
-  {
-    q: "What does SQL stand for in database management?",
-    options: ["Structured Query Language", "Sequential Queue Logic", "System Quality Level", "Standard Query Link"],
+    q: "Code Lock: 682 → One digit is correct and in the correct position. 614 → One digit is correct but in the wrong position. 738 → No digit is correct. Find the possible 3-digit password.",
+    options: ["642", "612", "684", "482"],
     correct: 0
   },
   {
-    q: "In symmetric key cryptography:",
-    options: ["Two different keys are used", "The same key is used for encryption and decryption", "No secret key is required", "Only public keys are used"],
-    correct: 1
-  },
-  {
-    q: "What attack floods a target server with artificial traffic to disable service access?",
-    options: ["Man-in-the-Middle (MitM)", "Denial of Service (DoS / DDoS)", "Phishing Attack", "SQL Injection"],
-    correct: 1
-  },
-  {
-    q: "Which OSI model layer handles IP addressing and logical routing?",
-    options: ["Physical Layer", "Network Layer", "Transport Layer", "Application Layer"],
-    correct: 1
-  },
-  {
-    q: "What is the standard IPv4 loopback address for localhost?",
-    options: ["192.168.1.1", "10.0.0.1", "127.0.0.1", "255.255.255.0"],
+    q: "Algorithm Puzzle: Start with n = 3. Perform the operation n = n × 3 + 2 twice. What is the final value of n?",
+    options: ["35", "38", "41", "44"],
     correct: 2
   },
   {
-    q: "Which of the following is a non-linear data structure?",
-    options: ["Array", "Singly Linked List", "Tree", "Queue"],
-    correct: 2
-  },
-  {
-    q: "What does VPN stand for?",
-    options: ["Virtual Private Network", "Verified Public Node", "Visual Protection Gateway", "Variable Passcode Network"],
+    q: "Grid Decryption: Use the grid: D E C R A P T X Y P T O. Path: (1,1) → (1,2) → (1,3) → (1,4) → (2,3) → (2,2) → (2,1). What word do you get?",
+    options: ["DECRYPT", "DECODEX", "ENCRYPT", "CRYPTIC"],
     correct: 0
   },
   {
-    q: "In ROT13 cipher, how many positions down the alphabet is each letter shifted?",
-    options: ["3 positions", "10 positions", "13 positions", "26 positions"],
+    q: "Mathematical Lock: A lock accepts a 3-digit number. First digit = 2. Second digit = first digit + 3. Third digit = second digit − 1. Find the code.",
+    options: ["245", "253", "254", "264"],
     correct: 2
   },
   {
-    q: "Which core operating system component manages memory, CPU schedules, and hardware drivers?",
-    options: ["Shell", "Kernel", "Compiler", "BIOS"],
+    q: "Multi-Level Puzzle: 20 – 5 – 3 – 8. Convert the numbers to letters, then reverse the resulting word. What is the final result?",
+    options: ["TECH", "HCET", "CODE", "EDOC"],
     correct: 1
   },
   {
-    q: "What type of attack tricks users into surrendering passwords via fake emails or websites?",
-    options: ["Phishing", "Buffer Overflow", "Cross-Site Scripting (XSS)", "Brute Force Attack"],
+    q: "Final Boss Puzzle: Message = 3 – 15 – 4 – 5. Convert numbers into letters, then move every letter one position backward.",
+    options: ["CODE", "DPDF", "BNCD", "AMBC"],
+    correct: 2
+  },
+  {
+    q: "Pattern Puzzle: Find the missing number: 2, 6, 12, 20, 30, ?",
+    options: ["40", "42", "44", "46"],
+    correct: 1
+  },
+  {
+    q: "Reverse + Number: Take the word GAME. Reverse it, then convert each letter using A = 1, B = 2, … Z = 26.",
+    options: ["7 - 1 - 13 - 5", "5 - 13 - 1 - 7", "5 - 1 - 13 - 7", "7 - 13 - 1 - 5"],
+    correct: 1
+  },
+  {
+    q: "Missing Letter: Find the missing letter: A, C, F, J, O, ?",
+    options: ["S", "T", "U", "V"],
+    correct: 2
+  },
+  {
+    q: "Word Transformation: CODE → DPEF (each letter moved one position forward). What is DATA after the same transformation?",
+    options: ["EBUB", "FCVC", "CZSZ", "EAVC"],
     correct: 0
   },
   {
-    q: "What is the worst-case time complexity of QuickSort?",
-    options: ["O(n log n)", "O(n)", "O(n²)", "O(1)"],
+    q: "Logic Lock: A 3-digit lock has digits whose sum is 12. The first digit is 2, and the last digit is twice the second digit. Is there a valid 3-digit code?",
+    options: ["Yes, 248", "Yes, 236", "No valid 3-digit code exists", "Yes, 255"],
     correct: 2
   },
   {
-    q: "Which HTTP status code signifies '404 Not Found'?",
-    options: ["200 OK", "500 Internal Error", "404 Not Found", "301 Redirect"],
+    q: "Mathematical Code: If A = 2, B = 4, C = 6, D = 8, what is the code for CAB?",
+    options: ["2 - 4 - 6", "6 - 4 - 2", "4 - 2 - 6", "6 - 2 - 4"],
+    correct: 3
+  },
+  {
+    q: "Grid Puzzle: Use the grid (3x3): A B C / D E F / G H I. Start at A. Move: Right → Down → Down → Left. Where do you reach?",
+    options: ["D", "F", "G", "H"],
     correct: 2
   },
   {
-    q: "What is an exploit payload primarily designed to do once delivered?",
-    options: ["Format hard drive storage", "Grant terminal/shell control to the researcher", "Run antivirus updates", "Show desktop background popups"],
+    q: "Word Logic: From PROGRAM, remove every second letter starting from the second letter. Which letters remain?",
+    options: ["PORM", "PRGM", "PGAM", "ROGM"],
+    correct: 0
+  },
+  {
+    q: "Operating System Puzzle: Process P1 holds Resource A and waits for Resource B. Process P2 holds Resource B and waits for Resource A. What has occurred?",
+    options: ["Race Condition", "Deadlock", "Starvation", "Mutual Exclusion"],
     correct: 1
   },
   {
-    q: "Which command displays network interface details and IP addresses in Linux?",
-    options: ["ipconfig", "ifconfig / ip addr", "netstat", "ping"],
-    correct: 1
-  },
-  {
-    q: "What is the total length of an IPv4 address in bits?",
-    options: ["16 bits", "32 bits", "64 bits", "128 bits"],
-    correct: 1
-  },
-  {
-    q: "Which asymmetric encryption algorithm relies on the mathematical hardness of prime factorization?",
-    options: ["AES-GCM", "RSA", "DES", "SHA-3"],
-    correct: 1
-  },
-  {
-    q: "What vulnerability occurs when untrusted user input is directly concatenated into SQL statements?",
-    options: ["Cross-Site Scripting (XSS)", "SQL Injection", "CSRF", "Directory Traversal"],
-    correct: 1
-  },
-  {
-    q: "Which Git command downloads a remote repository copy to your local workspace?",
-    options: ["git pull", "git push", "git clone", "git commit"],
-    correct: 2
-  },
-  {
-    q: "What is the time complexity of searching an element in a balanced Binary Search Tree (BST)?",
-    options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    q: "Final Boss – Code Tracing: x=2, y=3. x = x×y; y = x+y; x = y−x; y = y×x. Find the final values of x and y.",
+    options: ["x = 6, y = 9", "x = 3, y = 27", "x = 27, y = 3", "x = 9, y = 6"],
     correct: 1
   }
 ];
@@ -241,10 +241,10 @@ const state = {
     },
     { 
       title: "Task 7 (Points : 150)", 
-      prompt: "<h3>Find the Password & ID</h3>\n<div style=\"background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);\">\n  <input type=\"text\" id=\"t7-id\" placeholder=\"ID\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <input type=\"password\" id=\"t7-pass\" placeholder=\"Password\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <button type=\"button\" class=\"pro-btn sm\" style=\"width: 100%;\" onclick=\"if(document.getElementById('t7-id').value === 'clusiter_2k26' && document.getElementById('t7-pass').value === '2026') { document.getElementById('t7-msg').innerText = 'FLAG={AUTH_BYPASS_SUCCESS}'; document.getElementById('t7-msg').style.color = 'var(--accent-green)'; } else { document.getElementById('t7-msg').innerText = 'Access Denied: Invalid ID or Password'; document.getElementById('t7-msg').style.color = 'var(--accent-red)'; }\">Login</button>\n  <p id=\"t7-msg\" style=\"margin-top: 10px; font-weight: bold; text-align: center;\"></p>\n</div>", 
-      answer: "FLAG={AUTH_BYPASS_SUCCESS}", 
+      prompt: "<h3>Find the Password & ID</h3>\n<div style=\"background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);\">\n  <input type=\"text\" id=\"t7-id\" placeholder=\"ID\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <input type=\"password\" id=\"t7-pass\" placeholder=\"Password\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <button type=\"button\" class=\"pro-btn sm\" style=\"width: 100%;\" onclick=\"if(typeof window.t7_attempts === 'undefined') window.t7_attempts = 3; if(window.t7_attempts <= 0) { document.getElementById('t7-msg').innerText = 'Blocked: No attempts left'; return; } if(document.getElementById('t7-id').value === 'clusiter_2k26' && document.getElementById('t7-pass').value === '2k26') { document.getElementById('t7-msg').innerText = 'Success'; document.getElementById('t7-msg').style.color = 'var(--accent-green)'; } else { window.t7_attempts--; document.getElementById('t7-msg').innerText = 'Access Denied. Attempts left: ' + window.t7_attempts; document.getElementById('t7-msg').style.color = 'var(--accent-red)'; }\">Login</button>\n  <p id=\"t7-msg\" style=\"margin-top: 10px; font-weight: bold; text-align: center;\"></p>\n</div>", 
+      answer: "Success", 
       points: 150,
-      clues: ["Can you view the source code to see how the login is verified?"]
+      clues: ["Social media"]
     },
     { 
       title: "TASK 8 (Points : 250)", 
@@ -910,9 +910,9 @@ function startRound1Quiz() {
   sound.playClick();
   requestFullScreen();
   
-  // Shuffle questions randomly for this participant
+  // Load questions for this participant (no shuffling as per requirements)
   if (!state.shuffledR1Questions || state.shuffledR1Questions.length === 0) {
-    state.shuffledR1Questions = shuffleQuestions(r1Questions);
+    state.shuffledR1Questions = [...r1Questions];
   }
 
   state.r1QuizActive = true;
@@ -1101,7 +1101,7 @@ function updateScoreTag() {
   const questionsList = state.shuffledR1Questions || r1Questions;
   state.r1UserAnswers.forEach((ans, idx) => {
     if (questionsList[idx] && ans === questionsList[idx].correct) {
-      score += 15;
+      score += 10;
     }
   });
   state.score = score;
@@ -1138,18 +1138,20 @@ function startAdminApprovalPolling() {
           r2Status.style.color = 'var(--accent-green)';
         }
 
-        const waitingView = document.getElementById('view-waiting');
-        if (waitingView) { waitingView.classList.remove('active'); waitingView.style.display = 'none'; }
-        const dqView = document.getElementById('view-disqualified');
-        if (dqView) { dqView.classList.remove('active'); dqView.style.display = 'none'; }
-        const dashView = document.getElementById('view-dashboard');
-        if (dashView) { dashView.classList.add('active'); dashView.style.display = 'flex'; }
+        setTimeout(() => {
+          const waitingView = document.getElementById('view-waiting');
+          if (waitingView) { waitingView.classList.remove('active'); waitingView.style.display = 'none'; }
+          const dqView = document.getElementById('view-disqualified');
+          if (dqView) { dqView.classList.remove('active'); dqView.style.display = 'none'; }
+          const dashView = document.getElementById('view-dashboard');
+          if (dashView) { dashView.classList.add('active'); dashView.style.display = 'flex'; }
 
-        sound.playVictory();
-        unlockRound(3);
-        switchRoundTab(3);
-        persistStateToStorage();
-        alert(`CONGRATULATIONS!\n\nYour team "${state.teamName}" has been SELECTED & APPROVED by the Admin for Round 3!\n\nCapture The Flag Matrix is now UNLOCKED.`);
+          sound.playVictory();
+          unlockRound(3);
+          switchRoundTab(3);
+          persistStateToStorage();
+          alert(`CONGRATULATIONS!\n\nYour team "${state.teamName}" has been SELECTED & APPROVED by the Admin for Round 3!\n\nCapture The Flag Matrix is now UNLOCKED.`);
+        }, 1500);
         return;
       }
 
@@ -1219,7 +1221,7 @@ async function submitR1Quiz(isDisqualified = false, disqualificationReason = '')
     }
   });
 
-  const finalScore = actuallyDisqualified ? 0 : correctCount * 15;
+  const finalScore = actuallyDisqualified ? 0 : correctCount * 10;
   state.score = finalScore;
   state.r1Completed = true;
   state.r1QuizActive = false;
@@ -1330,14 +1332,14 @@ const r2Puzzles = [
     title: "1. THE SWITCHBOARD",
     cipherText: "Four switches control four systems:\nA → Database\nB → Firewall\nC → Backup\nD → Authentication\nExactly two switches are ON.\nThe monitoring system reports:\n• If A is ON, C must be OFF.\n• If B is ON, D must be ON.\n• C and D cannot both be ON.\n• At least one of A or B is ON.\n• If D is OFF, A must be ON.\nHowever, one monitoring statement is known to be false.\nThe actual switch state is:\nA = ON\nB = OFF\nC = ON\nD = OFF\nQuestion: Which monitoring statement is false?\nA) If A is ON, C must be OFF.\nB) If B is ON, D must be ON.\nC) C and D cannot both be ON.\nD) At least one of A or B is ON.\nE) If D is OFF, A must be ON.",
     hint: "Read the actual states and evaluate each statement.",
-    answer: "A"
+    answer: "if a is on, c must be off"
   },
   {
     id: 2,
     title: "2. THE DOUBLE-LAYER LOGIC",
     cipherText: "Four files have four different sizes:\n12 KB\n18 KB\n24 KB\n30 KB\nFiles are:\nA, B, C, D\nClues:\n• A is larger than C.\n• B is not 12 KB.\n• D is exactly 6 KB larger than B.\n• C is not 18 KB.\n• A is not 30 KB.\nQuestion: Which file is 24 KB?\nA) A\nB) B\nC) C\nD) D",
     hint: "Match each file to a size using the given clues step by step.",
-    answer: "A"
+    answer: "a"
   },
   {
     id: 3,
@@ -1358,14 +1360,14 @@ const r2Puzzles = [
     title: "5. The Detective's Wall",
     cipherText: "A detective finds five words written on a wall:\nShift — Alphabet — Key — Rotation — Ciphertext\nHe must identify what the five clues describe.",
     hint: "Concept: Pinpoint-style identification",
-    answer: "CAESAR CIPHER"
+    answer: "caesar cipher"
   },
   {
     id: 6,
     title: "6. The Online Shopping Secret",
     cipherText: "You buy something online.\nYou notice the website address begins with:\nhttps://\nYour browser shows a 🔒 symbol.\nThe information travelling between you and the website is protected so outsiders cannot easily read it.\nWhat cryptographic technology is helping protect the connection?",
     hint: "Real-world connection: HTTPS uses this.",
-    answer: "TLS ENCRYPTION"
+    answer: "TLS encryption"
   },
   {
     id: 7,
@@ -1393,7 +1395,7 @@ const r2Puzzles = [
     title: "10. Find the hidden technical concept",
     cipherText: "I have no battery,\nyet I can remember.\n\nI have no processor,\nyet I can affect what the processor does.\n\nI am fast when you return to what you used before.\n\nBut when what you need is not where you expected,\nI make you look somewhere else.\n\nIf you keep missing me,\nthe system becomes noticeably slower.\n\nWhat am I?\nA) RAM\nB) Cache\nC) Virtual Memory\nD) CPU Register",
     hint: "Think about what components speed up access and cause slowdowns when missed.",
-    answer: "CACHE"
+    answer: "cache"
   }
 ];
 
@@ -1592,7 +1594,7 @@ async function submitR2Puzzles(isDisqualified = false, disqualificationReason = 
     }
   });
 
-  const baseScore = solvedCount * 50;
+  const baseScore = solvedCount * 100;
   const timeTakenSeconds = 1800 - state.r2TimeRemainingSeconds;
   state.r2TimeTakenSeconds = Math.max(0, timeTakenSeconds);
 
