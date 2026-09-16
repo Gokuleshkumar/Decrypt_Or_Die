@@ -187,34 +187,34 @@ const state = {
   r3ClueDeductions: 0,
   r3Tasks: [
     { 
-      title: "Task 1 (Points : 25)", 
+      title: "Task 1 (Points : 50)", 
       prompt: "Whchgoh Thssp\nCan you break the shift and uncover the hidden message?\n🔑 Key = 7", 
       answer: "Pavazha Malli",
       clues: [
         "↩️ Shift every letter backwards by 7 to reveal the hidden message.",
         "🎧 The hidden message is the name of a popular song by Sai Abhyankkar."
       ],
-      points: 25
+      points: 50
     },
     { 
-      title: "Task 2 (Points : 25) - THE LANGUAGE OF MACHINES", 
+      title: "Task 2 (Points : 50) - THE LANGUAGE OF MACHINES", 
       prompt: "“Can you speak the language of machines?”\nYou intercepted this sequence:\n110001 111000 101111 110000 111001 101111 110010 110000 110010 110110\nSomething is hidden inside the numbers.\n🔑 KEY=18/09/2026", 
       answer: "18/09/2026",
       clues: [
         "It is not a character... it is a number.",
         "Every group contains exactly 6 bits. Convert each group into a decimal number, then find out what those numbers represent."
       ],
-      points: 25
+      points: 50
     },
     { 
-      title: "Task 3 (Points : 25) - Think outside of the box", 
+      title: "Task 3 (Points : 50) - Think outside of the box", 
       prompt: "“ Look around you what u see most familiar is the Key ”\n“Mugiwara (麦わら)”", 
       answer: "One Piece",
       clues: [
         "its an most popular anime",
         "consist of more than 1000+ Episodes in it"
       ],
-      points: 25
+      points: 50
     },
     { 
       title: "Task 4 (Points : 50)", 
@@ -233,17 +233,17 @@ const state = {
       points: 50 
     },
     { 
-      title: "Task 6 (Points : 250)", 
+      title: "Task 6 (Points : 50)", 
       prompt: "<h3>File Search</h3>\n<p>Download the Folder and Find the Hidden file.</p>\n<p><a href=\"https://drive.google.com/file/d/1tkdRcP_EPVacVf37iMP2dcYGXBoWGnB0/view?usp=sharing\" target=\"_blank\" class=\"pro-btn sm\" style=\"margin-top: 10px; margin-bottom: 10px;\"><i class=\"fa-solid fa-download\"></i> Download Folder</a></p>", 
       answer: "FLAG={HIDDEN_FILES_REVEAL_SECRETS}", 
-      points: 250,
+      points: 50,
       clues: ["Look for files named Treasure.txt or check hidden folders"]
     },
     { 
-      title: "Task 7 (Points : 150)", 
+      title: "Task 7 (Points : 50)", 
       prompt: "<h3>Find the Password & ID</h3>\n<div style=\"background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);\">\n  <input type=\"text\" id=\"t7-id\" placeholder=\"ID\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <input type=\"password\" id=\"t7-pass\" placeholder=\"Password\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <button type=\"button\" class=\"pro-btn sm\" style=\"width: 100%;\" onclick=\"if(typeof window.t7_attempts === 'undefined') window.t7_attempts = 3; if(window.t7_attempts <= 0) { document.getElementById('t7-msg').innerText = 'Blocked: No attempts left'; return; } if(document.getElementById('t7-id').value === 'clusiter_2k26' && document.getElementById('t7-pass').value === '2k26') { document.getElementById('t7-msg').innerText = 'Success'; document.getElementById('t7-msg').style.color = 'var(--accent-green)'; } else { window.t7_attempts--; document.getElementById('t7-msg').innerText = 'Access Denied. Attempts left: ' + window.t7_attempts; document.getElementById('t7-msg').style.color = 'var(--accent-red)'; }\">Login</button>\n  <p id=\"t7-msg\" style=\"margin-top: 10px; font-weight: bold; text-align: center;\"></p>\n</div>", 
       answer: "Success", 
-      points: 150,
+      points: 50,
       clues: ["Social media"]
     },
     { 
