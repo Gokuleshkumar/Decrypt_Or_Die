@@ -182,6 +182,7 @@
             <button class="btn sm" onclick="loadAdminDatabase()"><i class="fa-solid fa-rotate"></i> Refresh DB</button>
             <button class="btn primary sm" onclick="exportAdminCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
             <button class="btn warning sm" onclick="window.open('winners.html', '_blank')"><i class="fa-solid fa-trophy"></i> View Winners</button>
+            <button class="btn sm" style="background: var(--accent-red); color: white;" onclick="deleteAllData()"><i class="fa-solid fa-trash"></i> Clear All Data</button>
           </div>
         </div>
         <div style="display: flex; gap: 0.5rem; max-width: 400px; width: 100%;">
@@ -690,6 +691,28 @@
         }
       } catch (err) {
         alert(err.message);
+      }
+    }
+    async function deleteAllData() {
+      if (!confirm("⚠️ WARNING: This will permanently delete ALL user data from the database. Are you absolutely sure?")) return;
+      
+      const confirmText = prompt("Type 'DELETE' to confirm wiping the database:");
+      if (confirmText !== 'DELETE') {
+        alert("Operation cancelled.");
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/admin/delete-all', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message);
+          loadAdminDatabase();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        alert('Failed to delete data: ' + err.message);
       }
     }
   </script>

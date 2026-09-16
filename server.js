@@ -630,6 +630,23 @@ app.get('/api/winners', async (req, res) => {
   }
 });
 
+// POST /api/admin/delete-all -> Delete all user data
+app.post('/api/admin/delete-all', async (req, res) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });
+    }
+    
+    await Registration.deleteMany({});
+    console.log(` [ADMIN CLEARED ALL USER DATA!] `);
+    
+    return res.json({ success: true, message: 'Successfully deleted all user data from the database!' });
+  } catch (err) {
+    console.error('[ADMIN DELETE ALL ERROR]:', err);
+    return res.status(500).json({ error: 'Failed to delete user data' });
+  }
+});
+
 // Start Express Server
 const startServer = (portToTry) => {
   const server = app.listen(portToTry, () => {
