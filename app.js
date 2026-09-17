@@ -235,7 +235,7 @@ const state = {
     { 
       title: "Task 6 (Points : 50)", 
       prompt: "<h3>File Search</h3>\n<p>Download the Folder and Find the Hidden file.</p>\n<p><a href=\"https://drive.google.com/file/d/130J3VLPg4lqnaguXKEe9qhLJtjByW5DI/view?usp=sharing\" target=\"_blank\" class=\"pro-btn sm\" style=\"margin-top: 10px; margin-bottom: 10px;\"><i class=\"fa-solid fa-download\"></i> Download Folder</a></p>", 
-      answer: "FLAG={HIDDEN_FILES_REVEAL_SECRETS}", 
+      answer: "LEVEL UP", 
       points: 50,
       clues: ["Look for files named Treasure.txt or check hidden folders"]
     },
