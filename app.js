@@ -1455,7 +1455,7 @@ function startR2Timer() {
 
 function handleR2InputAnswer(val) {
   const index = state.r2CurrentIndex;
-  state.r2UserAnswers[index] = val ? val.trim().toUpperCase() : '';
+  state.r2UserAnswers[index] = val ? val.trim() : '';
   persistStateToStorage();
 }
 
