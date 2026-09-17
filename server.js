@@ -80,6 +80,36 @@ app.post('/api/login', async (req, res) => {
     });
   }
 
+  const ALLOWED_TEAMS = {
+    "decrypt _1": "clusiter$01",
+    "decrypt _2": "clusiter$02",
+    "decrypt _3": "clusiter$03",
+    "decrypt _4": "clusiter$04",
+    "decrypt _5": "clusiter$05",
+    "decrypt _6": "clusiter$06",
+    "decrypt _7": "clusiter$07",
+    "decrypt _8": "clusiter$08",
+    "decrypt _9": "clusiter$09",
+    "decrypt _10": "clusiter$10",
+    "decrypt _11": "clusiter$11",
+    "decrypt _12": "clusiter$12",
+    "decrypt _13": "clusiter$13",
+    "decrypt _14": "clusiter$14",
+    "decrypt _15": "clusiter$15",
+    "decrypt_16": "clusiter@2k16",
+    "decrypt_17": "clusiter@2k17",
+    "decrypt_18": "clusiter@2k18",
+    "decrypt_19": "clusiter@2k19",
+    "decrypt_20": "clusiter@2k20"
+  };
+
+  if (!ALLOWED_TEAMS[teamName] || ALLOWED_TEAMS[teamName] !== teamHash) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid Team Name or Team ID.'
+    });
+  }
+
   try {
     if (!isMongoConnected) {
       await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });

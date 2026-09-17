@@ -188,7 +188,7 @@ const state = {
   r3Tasks: [
     { 
       title: "Task 1 (Points : 50)", 
-      prompt: "Whchgoh Thssp\nCan you break the shift and uncover the hidden message?\n🔑 Key = 7", 
+      prompt: "Whchgoh Thssp\nCan you break the shift and uncover the hidden message?", 
       answer: "Pavazha Malli",
       clues: [
         "↩️ Shift every letter backwards by 7 to reveal the hidden message.",
@@ -198,7 +198,7 @@ const state = {
     },
     { 
       title: "Task 2 (Points : 50) - THE LANGUAGE OF MACHINES", 
-      prompt: "“Can you speak the language of machines?”\nYou intercepted this sequence:\n110001 111000 101111 110000 111001 101111 110010 110000 110010 110110\nSomething is hidden inside the numbers.\n🔑 KEY=18/09/2026", 
+      prompt: "“Can you speak the language of machines?”\nYou intercepted this sequence:\n110001 111000 101111 110000 111001 101111 110010 110000 110010 110110\nSomething is hidden inside the numbers.", 
       answer: "18/09/2026",
       clues: [
         "It is not a character... it is a number.",
@@ -229,7 +229,7 @@ const state = {
     { 
       title: "Task 5 (Points : 50)", 
       prompt: "<h3>Scan this Qr Using Google lens using laptop.(Dont use mobile phones)</h3>\n<p>Find the Flag inside the Website.</p>\n<img src=\"task5-qr.png\" alt=\"QR Code\" style=\"max-width: 250px; margin-top: 15px; border-radius: 8px; border: 1px solid var(--accent-green);\" />", 
-      answer: "FLAG={TH1NK_L1KE_A_H4CKER}", 
+      answer: "TH1NK_L1KE_A_H4CKER", 
       points: 50 
     },
     { 
@@ -242,14 +242,14 @@ const state = {
     { 
       title: "Task 7 (Points : 50)", 
       prompt: "<h3>Find the Password & ID</h3>\n<div style=\"background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);\">\n  <input type=\"text\" id=\"t7-id\" placeholder=\"ID\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <input type=\"password\" id=\"t7-pass\" placeholder=\"Password\" style=\"width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--accent-blue); border-radius: 5px;\" />\n  <button type=\"button\" class=\"pro-btn sm\" style=\"width: 100%;\" onclick=\"if(typeof window.t7_attempts === 'undefined') window.t7_attempts = 3; if(window.t7_attempts <= 0) { document.getElementById('t7-msg').innerText = 'Blocked: No attempts left'; return; } if(document.getElementById('t7-id').value === 'clusiter_2k26' && document.getElementById('t7-pass').value === '2k26') { document.getElementById('t7-msg').innerText = 'Success'; document.getElementById('t7-msg').style.color = 'var(--accent-green)'; } else { window.t7_attempts--; document.getElementById('t7-msg').innerText = 'Access Denied. Attempts left: ' + window.t7_attempts; document.getElementById('t7-msg').style.color = 'var(--accent-red)'; }\">Login</button>\n  <p id=\"t7-msg\" style=\"margin-top: 10px; font-weight: bold; text-align: center;\"></p>\n</div>", 
-      answer: "Success", 
+      answer: "clusiter_2k26", 
       points: 50,
       clues: ["Social media"]
     },
     { 
       title: "TASK 8 (Points : 250)", 
       prompt: "<h3>Reverse Engineering</h3>\n<p>Decode the given file and find the flag.</p>\n<p><a href=\"https://drive.google.com/file/d/1cUEWmA-58MapwgAX5aFAyeCPJ4G-P3SA/view?usp=drive_link\" target=\"_blank\" class=\"pro-btn sm\" style=\"margin-top: 10px; margin-bottom: 10px;\"><i class=\"fa-solid fa-download\"></i> Download task.exe</a></p>\n<p style=\"font-size: 0.9em; color: var(--accent-green);\">No Negative Marking for clues.</p>", 
-      answer: "FLAG_PLACEHOLDER", 
+      answer: "Say my name", 
       points: 250,
       clues: ["Reverse Engineering"]
     }
@@ -1344,21 +1344,21 @@ const r2Puzzles = [
   {
     id: 3,
     title: "3. The Mirror Alphabet",
-    cipherText: "GSRH RH Z HVXIVG",
+    cipherText: "GSRH RH Z HVXIVG\n\nA) THAT IS A SECRET\nB) THIS IS A CIPHER\nC) THIS IS A SECRET\nD) THE SECRET IS OUT",
     hint: "\"What is written becomes clear when the alphabet looks into a mirror.\"",
     answer: "THIS IS A SECRET"
   },
   {
     id: 4,
     title: "4. Binary Bits",
-    cipherText: "01000011 01011001 01000010 01000101 01010010",
+    cipherText: "01000011 01011001 01000010 01000101 01010010\n\nA) BYTES\nB) CYBER\nC) HACKER\nD) CODE",
     hint: "Every 8 bits represents one ASCII character.",
     answer: "CYBER"
   },
   {
     id: 5,
     title: "5. The Detective's Wall",
-    cipherText: "A detective finds five words written on a wall:\nShift — Alphabet — Key — Rotation — Ciphertext\nHe must identify what the five clues describe.",
+    cipherText: "A detective finds five words written on a wall:\nShift — Alphabet — Key — Rotation — Ciphertext\nHe must identify what the five clues describe.\n\nA) Vigenere Cipher\nB) RSA Encryption\nC) Enigma Machine\nD) Caesar Cipher",
     hint: "Concept: Pinpoint-style identification",
     answer: "caesar cipher"
   },
@@ -1456,7 +1456,6 @@ function startR2Timer() {
 function handleR2InputAnswer(val) {
   const index = state.r2CurrentIndex;
   state.r2UserAnswers[index] = val ? val.trim().toUpperCase() : '';
-  updateR2PaletteGrid();
   persistStateToStorage();
 }
 
@@ -1535,6 +1534,10 @@ function renderR2Puzzle(index) {
 function navigateR2Puzzle(direction) {
   if (state.disqualified) return;
   sound.playClick();
+  
+  if (!state.r2Attempted) state.r2Attempted = [];
+  state.r2Attempted[state.r2CurrentIndex] = true;
+
   const nextIdx = state.r2CurrentIndex + direction;
   if (nextIdx >= 0 && nextIdx < 10) {
     renderR2Puzzle(nextIdx);
@@ -1554,6 +1557,8 @@ function buildR2PaletteGrid() {
     btn.onclick = () => {
       if (state.disqualified) return;
       sound.playClick();
+      if (!state.r2Attempted) state.r2Attempted = [];
+      state.r2Attempted[state.r2CurrentIndex] = true;
       renderR2Puzzle(i);
     };
     gridElem.appendChild(btn);
@@ -1566,11 +1571,26 @@ function updateR2PaletteGrid() {
     if (!btn) continue;
 
     btn.className = 'palette-item';
-    if (state.r2UserAnswers[i] && state.r2UserAnswers[i].trim() !== '') {
-      btn.classList.add('answered');
+    let isCorrect = false;
+    const userAns = (state.r2UserAnswers[i] || '').trim().toUpperCase();
+    const pz = r2Puzzles[i];
+    
+    if (pz && pz.answer) {
+      const correctAns = pz.answer.trim().toUpperCase();
+      if (userAns === correctAns || userAns.replace(/\s+/g, '') === correctAns.replace(/\s+/g, '')) {
+        isCorrect = true;
+      }
     }
+
     if (i === state.r2CurrentIndex) {
       btn.classList.add('active');
+      if (userAns !== '') btn.classList.add('answered');
+    } else {
+      if (userAns !== '') {
+        btn.classList.add('answered');
+      } else {
+        btn.classList.add('wrong');
+      }
     }
   }
 }
@@ -2132,6 +2152,9 @@ function revealR3Clue(num) {
 }
 
 function navigateR3Task(dir) {
+  if (!state.r3Attempted) state.r3Attempted = [];
+  state.r3Attempted[state.r3CurrentIndex] = true;
+
   const newIndex = state.r3CurrentIndex + dir;
   if (newIndex >= 0 && newIndex < 8) {
     state.r3CurrentIndex = newIndex;
@@ -2141,37 +2164,7 @@ function navigateR3Task(dir) {
 }
 
 function handleR3InputAnswer(val) {
-  if (state.r3SolvedStatus[state.r3CurrentIndex]) return;
   state.r3UserAnswers[state.r3CurrentIndex] = val;
-
-  const currentTask = state.r3Tasks[state.r3CurrentIndex];
-  if (val.trim().toUpperCase() === currentTask.answer.toUpperCase()) {
-    sound.playSuccess();
-    state.r3SolvedStatus[state.r3CurrentIndex] = true;
-    
-    const inputElem = document.getElementById('r3-answer-input');
-    if (inputElem) inputElem.disabled = true;
-    
-    // Auto advance
-    setTimeout(() => {
-      let nextUnsolved = -1;
-      for (let i = 0; i < 8; i++) {
-        if (!state.r3SolvedStatus[i]) {
-          nextUnsolved = i;
-          break;
-        }
-      }
-      if (nextUnsolved !== -1) {
-        state.r3CurrentIndex = nextUnsolved;
-        loadR3Task();
-      } else {
-        renderR3Palette();
-        updateR3NavButtons();
-      }
-    }, 800);
-  }
-  renderR3Palette();
-  updateR3NavButtons();
   persistStateToStorage();
 }
 
@@ -2204,14 +2197,33 @@ function renderR3Palette() {
     pTile.className = 'palette-item';
     pTile.innerText = (i + 1);
 
-    if (state.r3SolvedStatus[i]) {
-      pTile.classList.add('answered');
+    let isCorrect = false;
+    const userAns = (state.r3UserAnswers[i] || '').trim().toUpperCase();
+    const task = state.r3Tasks[i];
+
+    if (task && task.answer) {
+      const correctAns = task.answer.trim().toUpperCase();
+      if (userAns === correctAns || userAns.replace(/\s+/g, '') === correctAns.replace(/\s+/g, '')) {
+        isCorrect = true;
+      }
     }
+
+    state.r3SolvedStatus[i] = isCorrect;
+
     if (i === state.r3CurrentIndex) {
       pTile.classList.add('active');
+      if (userAns !== '') pTile.classList.add('answered');
+    } else {
+      if (userAns !== '') {
+        pTile.classList.add('answered');
+      } else {
+        pTile.classList.add('wrong');
+      }
     }
 
     pTile.addEventListener('click', () => {
+      if (!state.r3Attempted) state.r3Attempted = [];
+      state.r3Attempted[state.r3CurrentIndex] = true;
       state.r3CurrentIndex = i;
       loadR3Task();
       persistStateToStorage();

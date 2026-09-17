@@ -1183,6 +1183,12 @@
       color: var(--accent-green);
     }
 
+    .palette-item.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
     .palette-legend {
       display: flex;
       justify-content: space-around;
@@ -1593,7 +1599,7 @@
                   <span
                     style="font-size: 0.7rem; color: var(--text-sub); display: block; margin-bottom: 0.3rem; font-family: var(--font-sans);">ENCRYPTED
                     CIPHERTEXT:</span>
-                  <span id="pz-ciphertext-text">...</span>
+                  <span id="pz-ciphertext-text" style="white-space: pre-wrap; display: block;">...</span>
                 </div>
 
                 <!-- Hint Box -->
