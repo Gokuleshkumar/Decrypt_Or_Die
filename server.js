@@ -100,7 +100,22 @@ app.post('/api/login', async (req, res) => {
     "decrypt_17": "clusiter@2k17",
     "decrypt_18": "clusiter@2k18",
     "decrypt_19": "clusiter@2k19",
-    "decrypt_20": "clusiter@2k20"
+    "decrypt_20": "clusiter@2k20",
+    "decrypt_21": "clusiter@2k21",
+    "decrypt_22": "clusiter@2k22",
+    "decrypt_23": "clusiter@2k23",
+    "decrypt_24": "clusiter@2k24",
+    "decrypt_25": "clusiter@2k25",
+    "decrypt_26": "clusiter@2k26",
+    "decrypt_27": "clusiter@2k27",
+    "decrypt_28": "clusiter@2k28",
+    "decrypt_29": "clusiter@2k29",
+    "decrypt_30": "clusiter@2k30",
+    "decrypt_31": "clusiter@2k31",
+    "decrypt_32": "clusiter@2k32",
+    "decrypt_33": "clusiter@2k33",
+    "decrypt_34": "clusiter@2k34",
+    "decrypt_35": "clusiter@2k35"
   };
 
   if (!ALLOWED_TEAMS[teamName] || ALLOWED_TEAMS[teamName] !== teamHash) {
